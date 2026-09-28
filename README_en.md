@@ -24,6 +24,9 @@
 > All copyright of the upstream project belongs to its original authors. This project is not affiliated with
 > or endorsed by them.
 
+> 📌 **Please read the [Project Declaration](DECLARATION.md) before use**: it covers attribution,
+> the non-commercial usage scope, third-party service compliance and privacy.
+
 ## What it does
 
 Planning a trip usually means jumping between platforms: reading notes, checking weather, comparing hotels,
