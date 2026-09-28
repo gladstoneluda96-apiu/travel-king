@@ -18,7 +18,8 @@
 
 set -uo pipefail
 
-PROJECT_ROOT="${TRIPSTAR_HOME:-/Users/tianrixuan/Documents/CreateItem/TripDesign}"
+# 项目根目录：默认取脚本所在目录的上一级，可用 TRIPSTAR_HOME 覆盖
+PROJECT_ROOT="${TRIPSTAR_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 LABEL="ai.tripdesign.local"
 DOMAIN="gui/$(id -u)"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
