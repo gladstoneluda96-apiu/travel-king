@@ -66,6 +66,9 @@
     "heroBadge": "AI 智能行程规划引擎",
     "titleLine": "探索世界的每一种可能",
     "heroDesc": "告诉我你的目的地与偏好，AI 将为你定制一份独一无二的旅程方案",
+    "heroCardTitle": "西安 3 天示例路线",
+    "heroCardCaption": "兵马俑 → 城墙 → 大雁塔",
+    "heroCardAlt": "高德地图生成的西安三日行程路线图",
     "nav": {
       "cta": "开始定制",
       "fogOn": "雾气开启",

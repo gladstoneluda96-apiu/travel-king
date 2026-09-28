@@ -1,0 +1,139 @@
+/**
+ * 设计令牌层
+ *
+ * 全部界面颜色 / 字号 / 圆角 / 间距 / 动效都从这里取值，组件里不写字面色值。
+ * 当前交付：暗色主题（[data-theme="dark"]）。
+ * 预留：日间主题只需给 <html data-theme="light"> 即可整体切换，见下方 light 区块。
+ */
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* 表面：从页面底色到逐级抬升的容器 */
+  --bg-0: #0a0f14;
+  --bg-1: #101821;
+  --bg-2: #16202a;
+  --bg-3: #1d2935;
+
+  /* 描边：细线结构代替满屏毛玻璃 */
+  --line: rgba(226, 238, 248, 0.1);
+  --line-strong: rgba(226, 238, 248, 0.18);
+
+  /* 文字 */
+  --text-1: #e8eff6;
+  --text-2: rgba(232, 239, 246, 0.7);
+  --text-3: rgba(232, 239, 246, 0.55);
+
+  /* 强调色：沿用品牌珊瑚橙，全局只用这一个强调色 */
+  --accent: #f2603c;
+  --accent-strong: #ff7a55;
+  --accent-ink: #1a0d09;
+  --accent-soft: rgba(242, 96, 60, 0.14);
+  --accent-line: rgba(242, 96, 60, 0.36);
+
+  /* 顶栏半透明底（暗色） */
+  --nav-bg: rgba(10, 15, 20, 0.78);
+
+  /* 语义色：仅用于真实状态（完成 / 提醒 / 错误） */
+  --ok: #45b98a;
+  --warn: #dfa458;
+  --danger: #e5604d;
+
+  /* 阴影：带底色调，避免纯黑投影 */
+  --shadow-1: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 12px 28px rgba(2, 8, 14, 0.34);
+  --shadow-2: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 28px 64px rgba(2, 8, 14, 0.46);
+}
+
+/* 日间主题挂点：后续接入时给 <html> 加 data-theme="light" 即可，
+   组件无需改动（当前未在界面中暴露切换入口）。 */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-0: #f5f6f7;
+  --bg-1: #ffffff;
+  --bg-2: #eef1f4;
+  --bg-3: #e4e9ee;
+
+  --line: rgba(16, 26, 36, 0.1);
+  --line-strong: rgba(16, 26, 36, 0.18);
+
+  --text-1: #111a22;
+  --text-2: rgba(17, 26, 34, 0.68);
+  --text-3: rgba(17, 26, 34, 0.55);
+
+  --accent: #d9471f;
+  --accent-strong: #bf3a15;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(217, 71, 31, 0.1);
+  --accent-line: rgba(217, 71, 31, 0.3);
+
+  --nav-bg: rgba(245, 246, 247, 0.84);
+
+  --ok: #1f8a5f;
+  --warn: #a5701f;
+  --danger: #c0392b;
+
+  --shadow-1: 0 1px 2px rgba(16, 26, 36, 0.06), 0 12px 28px rgba(16, 26, 36, 0.08);
+  --shadow-2: 0 2px 4px rgba(16, 26, 36, 0.06), 0 28px 64px rgba(16, 26, 36, 0.12);
+}
+
+:root {
+  /* 字体：拉丁与数字用自托管字体，中文回落到系统字体，不加载外部 CDN */
+  --font-sans: 'Outfit Variable', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* 字号阶梯 */
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-md: 17px;
+  --fs-lg: 20px;
+  --fs-xl: 24px;
+  --fs-2xl: 32px;
+  --fs-3xl: 40px;
+  --fs-display: clamp(2.25rem, 4.6vw, 3.75rem);
+
+  --lh-tight: 1.12;
+  --lh-snug: 1.35;
+  --lh-body: 1.65;
+
+  --ls-tight: -0.02em;
+  --ls-wide: 0.1em;
+
+  /* 间距阶梯 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+
+  /* 圆角：输入与按钮 12，卡片与面板 16，重点面板 20，胶囊 full，小标记 8 */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-pill: 999px;
+
+  /* 动效 */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 380ms;
+
+  /* 布局 */
+  --page-max: 1200px;
+  --nav-h: 64px;
+
+  /* 层级：只用于系统性分层 */
+  --z-sticky: 100;
+  --z-nav: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}

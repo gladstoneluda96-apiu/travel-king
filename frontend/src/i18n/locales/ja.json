@@ -66,6 +66,9 @@
     "heroBadge": "AI 旅行プランニングエンジン",
     "titleLine": "世界を巡るあらゆる可能性へ",
     "heroDesc": "目的地と好みを教えてください。AI があなた専用の旅程を作成します",
+    "heroCardTitle": "西安 3日間のサンプルルート",
+    "heroCardCaption": "兵馬俑 → 城壁 → 大雁塔",
+    "heroCardAlt": "高徳地図で描いた西安三日間のルート図",
     "nav": {
       "cta": "プランを始める",
       "fogOn": "霧オン",

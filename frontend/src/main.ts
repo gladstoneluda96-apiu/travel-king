@@ -1,8 +1,11 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import Antd from 'ant-design-vue'
+import '@fontsource-variable/outfit'
+import '@fontsource-variable/jetbrains-mono'
 import 'ant-design-vue/dist/reset.css'
-import './styles/global.css'
+import './styles/tokens.css'
+import './styles/base.css'
 import App from './App.vue'
 import { i18n } from './i18n'
 
@@ -31,4 +34,3 @@ app.use(Antd)
 app.use(i18n)
 
 app.mount('#app')
-

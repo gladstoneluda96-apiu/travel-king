@@ -66,6 +66,9 @@
     "heroBadge": "AI Intelligent Itinerary Engine",
     "titleLine": "Unlock Every Possibility",
     "heroDesc": "Tell me your destination and preferences, and AI will craft a unique travel plan for you",
+    "heroCardTitle": "A 3-day sample route in Xi'an",
+    "heroCardCaption": "Terracotta Army → City Wall → Giant Wild Goose Pagoda",
+    "heroCardAlt": "A three-day route map of Xi'an rendered by Amap",
     "nav": {
       "cta": "Start Planning",
       "fogOn": "Fog On",

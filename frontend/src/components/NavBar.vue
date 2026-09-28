@@ -1,64 +1,49 @@
 <template>
-  <nav class="navbar navbar-toggleable-md fixed-top navbar-transparent landing-navbar">
-    <div class="container">
-      <div class="navbar-translate">
-        <button
-          class="navbar-toggler navbar-toggler-right navbar-burger landing-burger"
-          type="button"
-          aria-label="Toggle navigation"
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="brand" type="button" @click="handleBrandClick">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">TripStar</span>
+      </button>
+
+      <div class="nav-actions">
+        <a
+          class="nav-icon"
+          title="GitHub"
+          aria-label="GitHub"
+          href="https://github.com/1sdv/TripStar"
+          target="_blank"
+          rel="noreferrer"
         >
-          <span class="navbar-toggler-bar"></span>
-          <span class="navbar-toggler-bar"></span>
-          <span class="navbar-toggler-bar"></span>
+          <PhGithubLogo :size="18" weight="fill" />
+        </a>
+
+        <a-select
+          v-model:value="locale"
+          class="nav-lang"
+          size="small"
+          :aria-label="t('app.language.label')"
+          :bordered="false"
+        >
+          <a-select-option value="zh-CN">{{ t('app.language.zh') }}</a-select-option>
+          <a-select-option value="ja-JP">{{ t('app.language.ja') }}</a-select-option>
+          <a-select-option value="en-US">{{ t('app.language.en') }}</a-select-option>
+        </a-select>
+
+        <button
+          class="nav-icon"
+          type="button"
+          :title="t('settings.open')"
+          :aria-label="t('settings.open')"
+          @click="openSettingsDialog"
+        >
+          <PhGearSix :size="18" />
         </button>
-        <button class="navbar-brand landing-brand" type="button" @click="handleBrandClick">TripStar</button>
-      </div>
-      <div class="navbar-collapse landing-navbar-collapse" id="navbarToggler">
-        <ul class="navbar-nav ml-auto landing-nav">
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              rel="tooltip"
-              title="Star on GitHub"
-              data-placement="bottom"
-              href="https://github.com/1sdv/TripStar"
-              target="_blank"
-              style="display:inline-flex;align-items:center;gap:6px;"
-            >
-              <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-              </svg>
-            </a>
-          </li>
-          <li class="nav-item">
-            <!-- <button class="nav-link landing-nav-btn fog-toggle" type="button" :aria-pressed="fogEnabled" @click="toggleFog">
-              {{ fogEnabled ? t('home.nav.fogOn') : t('home.nav.fogOff') }}
-            </button> -->
-          </li>
-          <li class="nav-item landing-lang-item">
-            <a-select v-model:value="locale" class="lang-select-nav" size="small" :aria-label="t('app.language.label')">
-              <a-select-option value="zh-CN">{{ t('app.language.zh') }}</a-select-option>
-              <a-select-option value="ja-JP">{{ t('app.language.ja') }}</a-select-option>
-              <a-select-option value="en-US">{{ t('app.language.en') }}</a-select-option>
-            </a-select>
-          </li>
-          <li class="nav-item">
-            <button
-              type="button"
-              class="nav-link landing-nav-btn settings-btn"
-              :title="t('settings.open')"
-              :aria-label="t('settings.open')"
-              @click="openSettingsDialog"
-            >
-              <svg width="25px" height="25px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M600.704 64a32 32 0 0 1 30.464 22.208l35.2 109.376c14.784 7.232 28.928 15.36 42.432 24.512l112.384-24.192a32 32 0 0 1 34.432 15.36L944.32 364.8a32 32 0 0 1-4.032 37.504l-77.12 85.12a357.12 357.12 0 0 1 0 49.024l77.12 85.248a32 32 0 0 1 4.032 37.504l-88.704 153.6a32 32 0 0 1-34.432 15.296L708.8 803.904c-13.44 9.088-27.648 17.28-42.368 24.512l-35.264 109.376A32 32 0 0 1 600.704 960H423.296a32 32 0 0 1-30.464-22.208L357.696 828.48a351.616 351.616 0 0 1-42.56-24.64l-112.32 24.256a32 32 0 0 1-34.432-15.36L79.68 659.2a32 32 0 0 1 4.032-37.504l77.12-85.248a357.12 357.12 0 0 1 0-48.896l-77.12-85.248A32 32 0 0 1 79.68 364.8l88.704-153.6a32 32 0 0 1 34.432-15.296l112.32 24.256c13.568-9.152 27.776-17.408 42.56-24.64l35.2-109.312A32 32 0 0 1 423.232 64H600.64zm-23.424 64H446.72l-36.352 113.088-24.512 11.968a294.113 294.113 0 0 0-34.816 20.096l-22.656 15.36-116.224-25.088-65.28 113.152 79.68 88.192-1.92 27.136a293.12 293.12 0 0 0 0 40.192l1.92 27.136-79.808 88.192 65.344 113.152 116.224-25.024 22.656 15.296a294.113 294.113 0 0 0 34.816 20.096l24.512 11.968L446.72 896h130.688l36.48-113.152 24.448-11.904a288.282 288.282 0 0 0 34.752-20.096l22.592-15.296 116.288 25.024 65.28-113.152-79.744-88.192 1.92-27.136a293.12 293.12 0 0 0 0-40.256l-1.92-27.136 79.808-88.128-65.344-113.152-116.288 24.96-22.592-15.232a287.616 287.616 0 0 0-34.752-20.096l-24.448-11.904L577.344 128zM512 320a192 192 0 1 1 0 384 192 192 0 0 1 0-384zm0 64a128 128 0 1 0 0 256 128 128 0 0 0 0-256z"/></svg>
-            </button>
-          </li>
-          <li class="nav-item">
-            <button type="button" class="btn btn-danger btn-round landing-cta" @click="handleCtaClick">
-              {{ t('home.nav.cta') }}
-            </button>
-          </li>
-        </ul>
+
+        <button class="nav-cta" type="button" @click="handleCtaClick">
+          <span>{{ t('home.nav.cta') }}</span>
+          <PhArrowRight :size="15" weight="bold" />
+        </button>
       </div>
     </div>
     <a-modal
@@ -172,6 +157,7 @@
 </template>
 
 <script setup lang="ts">
+import { PhArrowRight, PhGearSix, PhGithubLogo } from '@phosphor-icons/vue'
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
@@ -259,287 +245,156 @@ const saveSettingsNow = async () => {
 </script>
 
 <style scoped>
-.landing-navbar {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  z-index: 1030 !important;
-  min-height: 70px;
-  padding: 0 !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  border: none !important;
-  border-bottom: 1px solid transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  transition: background 0.3s;
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: var(--z-nav);
+  height: var(--nav-h);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
 }
 
-.landing-navbar:not(.navbar-transparent) {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  border-color: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+.nav-inner {
+  height: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
 }
 
-.landing-navbar.navbar-transparent {
-  padding-top: 0 !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-}
-
-.landing-navbar *,
-.landing-navbar::before,
-.landing-navbar::after {
-  box-sizing: border-box;
-}
-
-.landing-navbar .container {
-  width: 100% !important;
-  max-width: 100vw !important;
-  min-height: 70px;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box !important;
-}
-
-.landing-navbar .navbar-translate {
-  display: flex !important;
-  align-items: center !important;
-  min-height: 70px;
-  flex: 0 0 auto;
-}
-
-.landing-navbar .navbar-brand {
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 1 !important;
-}
-
-.landing-burger {
-  display: none !important;
-}
-
-.landing-brand {
-  background: transparent !important;
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
   border: 0;
-  color: #f4f8fc !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase;
-  font-size: 13px !important;
+  background: none;
+  color: var(--text-1);
   cursor: pointer;
-  min-height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.landing-navbar-collapse {
-  display: flex !important;
-  justify-content: flex-end;
-  align-items: center;
-  flex: 1;
-  position: static !important;
-  transform: none !important;
-  width: auto !important;
-  height: auto !important;
-  background: transparent !important;
-  border: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(140deg, var(--accent), var(--accent-strong));
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
 }
 
-.landing-navbar-collapse::before,
-.landing-navbar-collapse::after {
-  display: none !important;
-  content: none !important;
-  background: transparent !important;
-}
-
-.landing-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 0 auto !important;
-  padding: 0;
-  list-style: none;
-}
-
-.landing-nav .nav-item {
-  margin: 0;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-}
-
-.landing-nav .nav-item .nav-link {
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 1 !important;
-  opacity: 1 !important;
-}
-
-.landing-nav-btn {
-  border: 1.2px solid rgba(236, 243, 250, 0.24);
-  background: rgba(12, 23, 32, 0.56);
-  color: #ecf3fa;
-  border-radius: 999px;
-  padding: 0 12px;
-  min-height: 34px;
-  font-size: 12px;
+.brand-name {
+  font-size: var(--fs-base);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.nav-icon {
+  width: 38px;
+  height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-2);
   cursor: pointer;
-  text-transform: uppercase;
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
-.settings-btn {
-  text-transform: none;
-  border: none !important;
-  background: none !important;
+.nav-icon:hover {
+  color: var(--text-1);
+  background: var(--bg-2);
+  border-color: var(--line);
 }
 
-.fog-toggle[aria-pressed='true'] {
-  border-color: rgba(215, 110, 66, 0.55);
-  background: rgba(215, 110, 66, 0.2);
-  color: #ffe3d6;
+.nav-icon:active {
+  transform: translateY(1px);
 }
 
-.landing-lang-item {
-  display: flex;
+.nav-lang {
+  width: 96px;
+}
+
+.nav-lang :deep(.ant-select-selector) {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.nav-lang :deep(.ant-select-selection-item) {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.nav-lang:hover :deep(.ant-select-selector) {
+  background: var(--bg-2) !important;
+}
+
+.nav-cta {
+  display: inline-flex;
   align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding-inline: 16px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
 }
 
-.lang-select-nav {
-  width: 110px;
+.nav-cta:hover {
+  background: var(--accent-strong);
 }
 
-.lang-select-nav :deep(.ant-select-selector) {
-  height: 34px !important;
-  padding: 0 12px !important;
-  border: 1.2px solid rgba(236, 243, 250, 0.24) !important;
-  background: rgba(12, 23, 32, 0.56) !important;
-  border-radius: 999px !important;
-  display: flex !important;
-  align-items: center !important;
+.nav-cta:active {
+  transform: translateY(1px) scale(0.99);
 }
 
-.lang-select-nav :deep(.ant-select-selection-item) {
-  line-height: 32px !important;
-  font-size: 12px !important;
-}
-
-.lang-select-nav :deep(.ant-select-selection-item),
-.lang-select-nav :deep(.ant-select-arrow) {
-  color: #ecf3fa !important;
-}
-
-.landing-cta {
-  min-height: 32px;
-  padding: 0 14px !important;
-  font-size: 12px !important;
-  border: none !important;
-  letter-spacing: 0.06em;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  margin: 0 !important;
-}
-
-.landing-navbar .btn {
-  margin: 0 !important;
-}
-
-@media (max-width: 991px) {
-  .landing-navbar {
-    min-height: 64px;
-  }
-
-  .landing-navbar .container {
-    padding-left: 14px;
-    padding-right: 14px;
-    min-height: 64px;
-  }
-
-  .landing-navbar .navbar-translate {
-    min-height: 64px;
-  }
-
-  .lang-select-nav {
-    width: 92px;
-  }
-
-  .landing-cta {
-    min-height: 34px;
-    padding: 0 10px !important;
-  }
-
-  .landing-nav {
-    gap: 6px;
-  }
-}
-
-@media (max-width: 520px) {
-  .landing-navbar .container {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
-  .landing-brand {
-    font-size: 10px !important;
-    letter-spacing: 0.05em !important;
-    max-width: 70px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .landing-nav {
-    gap: 3px !important;
-  }
-
-  .lang-select-nav {
-    width: 68px !important;
-  }
-
-  .lang-select-nav :deep(.ant-select-selector) {
-    padding: 0 4px !important;
-  }
-
-  .landing-cta {
-    padding: 0 8px !important;
-    font-size: 10px !important;
-    min-height: 30px !important;
-    margin-right: 0 !important;
-  }
-}
-
-@media (max-width: 400px) {
-  .landing-nav .nav-item:first-child {
-    display: none !important;
-  }
-
-  .lang-select-nav {
-    width: 62px !important;
-  }
+/* 设置弹窗 */
+.settings-modal :deep(.ant-modal-body) {
+  padding-top: var(--sp-2);
 }
 
 .runtime-settings-form :deep(.ant-form-item) {
-  margin-bottom: 12px;
+  margin-bottom: var(--sp-4);
+}
+
+.runtime-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--sp-5);
+}
+
+.runtime-settings-full {
+  grid-column: 1 / -1;
+}
+
+.field-label {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+@media (max-width: 720px) {
+  .nav-lang {
+    display: none;
+  }
+
+  .runtime-settings-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 </style>
