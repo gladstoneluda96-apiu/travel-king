@@ -579,7 +579,7 @@ import { Loader as GoogleMapsLoader } from '@googlemaps/js-api-loader'
 import html2canvas from 'html2canvas'
 import * as echarts from 'echarts'
 import Swiper from 'swiper'
-import { Keyboard, Mousewheel } from 'swiper/modules'
+import { Keyboard } from 'swiper/modules'
 import NavBar from '@/components/NavBar.vue'
 import { cssVar, isDark } from '@/services/theme'
 import OverviewAttractionCard from '@/components/OverviewAttractionCard.vue'
@@ -867,16 +867,18 @@ const initOverviewSwiper = async () => {
 
   destroyOverviewSwiper()
   overviewSwiper = new Swiper(root, {
-    modules: [Keyboard, Mousewheel],
+    modules: [Keyboard],
     effect: 'slide',
     grabCursor: true,
-    centeredSlides: true,
+    // 仅鼠标拖动：关掉滚轮劫持，幻灯片不再居中回弹
+    centeredSlides: false,
     slidesPerView: 2,
+    slideToClickedSlide: false,
+    touchStartPreventDefault: false,
+    resistanceRatio: 0.65,
+    watchSlidesProgress: false,
     keyboard: {
       enabled: true,
-    },
-    mousewheel: {
-      thresholdDelta: 70,
     },
     spaceBetween: 16,
     loop: false,
@@ -895,9 +897,9 @@ const initOverviewSwiper = async () => {
     },
   })
 
-  const initialIndex = Math.min(1, overviewAttractions.value.length - 1)
-  activeOverviewCard.value = initialIndex
-  overviewSwiper.slideTo(initialIndex, 0, false)
+  // 从第一张开始，不做初始偏移（拖动是唯一的横向控制方式）
+  activeOverviewCard.value = 0
+  overviewSwiper.slideTo(0, 0, false)
 }
 
 // 知识图谱相关

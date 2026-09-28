@@ -11,6 +11,7 @@
         :src="imageSrc"
         :alt="item.name"
         loading="lazy"
+        draggable="false"
         @error="handleImageError"
       />
       <div v-else class="slide-placeholder">
@@ -81,6 +82,7 @@ const handleImageError = (event: Event) => {
   display: flex;
   flex-direction: column;
   width: 100%;
+  user-select: none;
   height: 400px;
   overflow: hidden;
   background: var(--bg-1);
@@ -103,11 +105,8 @@ const handleImageError = (event: Event) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--dur-slow) var(--ease);
-}
-
-.swiper-slide-active:hover .slide-media img {
-  transform: scale(1.04);
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 /* 没有配图时的占位：图标 + 可换行的景点名 */
