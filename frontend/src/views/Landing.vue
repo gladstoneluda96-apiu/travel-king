@@ -13,7 +13,7 @@
               <span>{{ t('home.nav.cta') }}</span>
               <PhArrowRight :size="16" weight="bold" />
             </button>
-            <a class="hero-gh" href="https://github.com/1sdv/TripStar" target="_blank" rel="noreferrer">
+            <a class="hero-gh" :href="REPO_URL" target="_blank" rel="noreferrer">
               <PhGithubLogo :size="17" weight="fill" />
               <span>GitHub</span>
             </a>
@@ -295,6 +295,7 @@ import { getCurrentLocale } from '@/i18n'
 import NavBar from '@/components/NavBar.vue'
 import { PhArrowRight, PhBed, PhCheckCircle, PhCloudSun, PhGithubLogo, PhMapPin } from '@phosphor-icons/vue'
 import heroRoute from '@/assets/hero-route.png'
+import { REPO_URL } from '@/constants/repo'
 import type { TripFormData, TripTaskEvent, TripHistoryItem, CityStay } from '@/types'
 import type { Dayjs } from 'dayjs'
 

@@ -10,7 +10,7 @@
           class="nav-icon"
           title="GitHub"
           aria-label="GitHub"
-          href="https://github.com/1sdv/TripStar"
+          :href="REPO_URL"
           target="_blank"
           rel="noreferrer"
         >
@@ -170,6 +170,7 @@
 import { PhArrowRight, PhGearSix, PhGithubLogo, PhMoon, PhSun } from '@phosphor-icons/vue'
 import { isDark, toggleTheme } from '@/services/theme'
 import brandLockup from '@/assets/brand-lockup.png'
+import { REPO_URL } from '@/constants/repo'
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'

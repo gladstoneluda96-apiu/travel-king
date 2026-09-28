@@ -1,340 +1,184 @@
-<div align="center" style="display: flex; justify-content: center; align-items: center; gap: 2px;">
-  <img width="400" alt="brand" src="https://github.com/user-attachments/assets/50c490da-9042-4661-bf8f-f7fd8084a506" />
-</div>
-<p align="center">
-  <img src="https://img.shields.io/badge/license-GPL--2.0-orange">
-  <img src="https://img.shields.io/badge/version-v2.1.0-green">
-  <img src="https://img.shields.io/badge/Docker-Build-blue?logo=docker">
-  <img src="https://img.shields.io/badge/python-3.10+-blue.svg">
-  <img src="https://img.shields.io/badge/vue-3.x-brightgreen.svg">
-  <img src="https://img.shields.io/badge/FastAPI-0.100+-teal.svg">
-</p>
-
 <div align="center">
+  <img src="frontend/public/icon.png" width="140" alt="旅游大王" />
 
-[🇨🇳 中文](README.md) | [🇺🇸 English](README_en.md) | [🇯🇵 日本語](README_ja.md)
+# 旅游大王 (Travel King)
 
+**AI 文旅行程规划助手**：说出目的地与偏好，自动产出可执行的行程方案
 
-# 旅途星辰 - AI 旅行智能体
-**基于 HelloAgents 框架打造的多智能体协作文旅规划平台**
+[![License: GPL-2.0](https://img.shields.io/badge/license-GPL--2.0-orange)](LICENSE)
+[![Vue](https://img.shields.io/badge/vue-3.5-brightgreen)](https://vuejs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-teal)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/python-3.10+-blue)](https://www.python.org/)
+
+[中文](README.md) | [English](README_en.md) | [日本語](README_ja.md)
+
 </div>
 
-
-
-> [!IMPORTANT]
-> 
-> 本地部署可直接体验项目，完整体验项目功能需配置好相关的key，探索丰富功能， 
-> 其中包括：旅行计划、景点地图概览、预算明细、每日行程：行程描述、交通方式、住宿推荐、景点安排（地址、游览时长、景点描述、预约提醒）、餐饮安排、天气信息、知识图谱可视化、沉浸式伴游 AI 问答......
-
-## 项目简介
-
-**旅途星辰 (TripStar)** 是一个创新的 AI 文旅智能体应用，基于 HelloAgents 框架打造的多智能体协作文旅规划平台，旨在解决用户在规划旅行时面临的"信息过载"和"决策疲劳"问题。
-
-有别于传统的旅游攻略网站，本项目采用了基于 **大语言模型 (LLM)** 和 **多智能体 (Multi-Agent)** 协作架构的创新模式。它能像一位经验丰富的人类旅行管家一样，全面考虑用户的个性化需求（偏好设置：交通方式、住宿风格、旅行兴趣、特殊需求等），自动搜索旅行信息、查询当地天气、精选酒店并规划最优景点路线，以**快速完成旅游攻略**。
-
-### 核心亮点
-
-* **小红书深度集成**: 景点推荐与攻略数据直接来源于小红书真实用户游记，通过 LLM 智能提纯，获取最真实的避坑指南与打卡建议。景点图片也通过小红书实时搜索获取，确保展示的是网友最新实拍的真实风景照。
-* **景点预约提醒**: 智能识别小红书游记中提及的需要提前预约的景点（如故宫、陕西历史博物馆等），在行程卡片中醒目标注预约提示与预约渠道信息，防止白跑一趟。
-* **多语言与国际化支持**: 深度集成 Vue I18n，同时在 LLM 提示词层及知识图谱底层实现语言自适应适配。系统界面及 AI 问答全程支持多语言（中/英/日）无缝切换，连同生成的旅行规划数据会自动翻译为目标语言，为全球旅行者打造无障碍的行程规划体验。
-* **双地图引擎高定互动展现**: 深度集成并支持 **Google Maps** 与 **高德地图 (AMap)** 双引擎的无缝切换与自动回退。国外使用 Google Maps，国内回退高德。动态绘制"起点-景点-终点"的真实经纬度打卡路线，提供高级定制底图配色，一眼预览景点位置方便安排行程。
-* **精准预算明细面板**: 智能汇总门票、餐饮、住宿与交通等多维度花销账单，提供直观的财务面板报表，让出行预算尽在掌握。
-* **多智能体协作协同**: 采用分工明确的多个 Agent（如天气预报员、酒店推荐专家），通过工作流 (Workflow) 协同完成复杂的旅行规划任务。
-* **知识图谱可视化**: 将生成的行程数据实时转换为节点关系图，直观展示"城市-天数-行程节点-预算"的空间结构。
-* **沉浸式伴游 AI 问答**: 在生成报告后，提供悬浮式 AI 问答窗口（左下角），AI 拥有完整行程的上下文记忆，用户可随时针对行程细节（如票价、适宜性）进行追问。
-* **多城市行程规划**: 支持在一次旅行中规划多个城市，动态添加城市并设置停留天数，系统自动计算总行程天数。城际移动日智能标注交通建议，预算面板独立统计城际交通费用，天气面板按城市分别展示，知识图谱以多城市拓扑呈现完整路线。
-* **用户偏好记忆模块**: 内置分权重的用户专属旅行偏好记忆库，支持遗忘机制与 TOP-K 召回。开启后会在行程生成成功后自动提取稳定偏好并打分入库，下次规划时将高权重偏好注入 Agent Prompt，让推荐持续贴合用户习惯。
-* **奢华暗黑玻璃拟物风**: 全新设计的暗黑系玻璃拟物化 (Dark Luxury Glassmorphism) 界面，提供极具沉浸感的高级视觉体验。
----
-> 举个例子：到中国——西安玩耍，只需要填写地点、日期、偏好设置，即可等待行程规划的结果，一眼预览如何安排旅游景点（步行路线、驾车路线等）
-<img width="1236" height="545" alt="image" src="https://github.com/user-attachments/assets/f99c6d23-d0ac-447f-a683-b2133f918159" />
-<img width="1243" height="538" alt="image" src="https://github.com/user-attachments/assets/fc31d735-66be-4c5c-b266-5f4806241bea" />
-
-
-
-## 系统架构
-
-本项目采用标准的前后端分离架构，分为前端 Vue 交互层、后端 FastAPI 服务层和 LLM/Agents 的智能推理层。
-
-```mermaid
-sequenceDiagram
-    autonumber
-    
-    participant Client as Frontend (User)
-    participant Route as api/routes/trip.py
-    participant Planner as trip_planner_agent.py
-    participant XHS as xhs_service.py
-    participant Maps as map_dispatcher.py
-    participant LLM as llm_service.py
-    participant POI as api/routes/poi.py
-    participant KG as knowledge_graph_service.py
-
-    Client->>Route: POST /api/trip/plan (城市,天数,偏好)
-    Route-->>Client: 返回 task_id & ws_url
-    Route->>Planner: 启动异步任务 _run_trip_planning(request)
-    Client->>Route: WebSocket 订阅 /ws/{task_id}
-    Note right of Route: 通过 WebSocket 实时推送任务 processing/progress 状态
-    
-    rect rgb(240, 248, 255)
-        Note over Planner, LLM: 并发阶段 (asyncio.gather 优化) 
-        
-        par [1/3] 景点搜索：小红书原生接口提纯
-            Planner->>XHS: search_xhs_attractions(city, keywords, lang)
-            XHS->>XHS: XhsNativeClient 原生签名直连 / SSR 备用爬取
-            XHS->>LLM: 抛入游记杂文，Prompt 要求提纯出景点JSON数组
-            LLM-->>XHS: [{"name": "故宫", "duration": 120, ...}]
-            
-            loop 为每个提纯出的景点补齐坐标
-                XHS->>Maps: geocode_unified(name, city)
-                Note right of Maps: Google 地理编码优先，失败降级高德 REST
-                Maps-->>XHS: 经纬度 {longitude, latitude}
-            end
-            XHS-->>Planner: 拼接整理好的小红书景点候选文本
-            
-        and [2/3] 天气搜索：智能体调用 Tool
-            Planner->>Planner: weather_agent.run()
-            Planner->>Maps: 代理调用 Google/AMap MCP Weather Tool
-            Maps-->>Planner: 返回未来天气数据
-            Note right of Planner: Google API若失败，自动回退请求高德天气REST接口
-            
-        and [3/3] 酒店搜索：智能体调用 Tool
-            Planner->>Planner: hotel_agent.run()
-            Planner->>Maps: 代理调用 Google/AMap MCP POI Text Search
-            Maps-->>Planner: 返回酒店列表
-        end
-    end
-    
-    rect rgb(255, 240, 245)
-        Note over Planner, LLM: 串行聚合阶段：最终规划融合
-        Planner->>LLM: 拼接景点、天气、酒店上下文进入终极 Planner Prompt
-        LLM-->>Planner: 【高危操作】返回包含行程、预算等复杂嵌套的 JSON 字符串
-        
-        Planner->>Planner: _parse_response() 容错解析
-        Note right of Planner: 1. 清理杂乱字符<br>2. 修复未转义引号<br>3. 截断修复(补齐括号)<br>4. 暴力提取<br>5. 若均失败再求助 LLM 修补
-    end
-
-    Planner->>KG: build_knowledge_graph(trip_plan, lang)
-    Note right of KG: 提取城市、日程、景点、预算、建议的节点与关联边，并按多语言翻译标签
-    KG-->>Planner: graph_data (nodes, edges, categories)
-
-    Planner-->>Route: 返回完整 TripPlanResponse 结构
-    Route->>Route: _update_task_state(status="completed")持久化至磁盘
-    Route-->>Client: WebSocket 推送成功结果 (含 plan JSON 及 graph 拓扑)
-    
-    rect rgb(240, 255, 240)
-        Note over Client, XHS: 异步前端懒加载：景点图片搜图
-        Client->>POI: GET /api/poi/photo?name=xxx
-        POI->>XHS: get_photo_from_xhs(keyword)
-        XHS->>XHS: 原生搜索 "xxx 风景" 获取首个有效笔记的第一张图 URL
-        XHS-->>POI: photo_url
-        POI-->>Client: 图片加载成功
-    end
-```
-
 ---
 
-## 核心功能与工作流
+## 复刻声明
 
-### 1. 异步轮询任务系统 (解决网关超时)
+> **本项目复刻自 [1sdv/TripStar](https://github.com/1sdv/TripStar)**（原作者：1sdv 及贡献者），并遵循原项目的 **GPL-2.0** 许可证进行二次开发与发布。
+>
+> 本项目在原项目基础上做了界面重设计、日间模式、行程预览交互重构、景点配图降级链路、品牌更名等修改，具体改动清单见 [NOTICE](NOTICE)。上游项目的全部版权与署名归原作者所有，本项目不代表原作者的立场，也未获得原作者的背书。
+>
+> 若你是原作者并希望调整署名方式或下架本项目，请通过 Issue 联系。
 
-针对 LLM 生成超长文本易导致 504 Gateway Timeout 的痛点，重构了后端的任务调度机制。
+## 这是什么
 
-* **`POST /api/trip/plan`**: 立即返回 `task_id`，将长达数分钟的推理任务推入后台 `asyncio.create_task`。
-* **`GET /api/trip/status/{task_id}`**: 前端每 3 秒发起一次轻量请求，实时获取当前处理进度（如"🔍 正在搜索景点..."），直至状态变为 `completed`。
+规划一次旅行通常要在多个平台之间来回切换：翻游记、查天气、比酒店、算预算、排路线。旅游大王把这些环节收敛到一个界面：**你只描述目的地与偏好，系统产出一份可直接执行的行程**。
 
-### 2. 多智能体架构 (Agentic Workflow)
+它不是一个静态的攻略列表，而是一份可核对的方案：景点带地址与建议时长、需要提前预约的会显式标注、交通有具体建议、餐饮有推荐与价格、预算分项可展开核对，配地图与知识图谱，生成后还能针对细节继续追问。
 
-主控 Agent 接收到用户自然语言指令后，基于 React 模式拆解任务：
+## 核心功能
 
-1. **小红书景点提取**: 搜索城市旅游攻略帖，通过 SSR 页面抓取获取帖子正文内容，再由 LLM 从长文游记中提纯出景点名称、真实评价、游玩时长以及是否需要提前预约等结构化信息，最后通过高德 POI 搜索接口补齐精准经纬度坐标。
-2. **天气与酒店**: 天气管家查询目标日期的气候状况；酒店专员根据预算寻找合适落脚点。
-3. **路线编排**: 主控 Agent 收集三方数据，进行统筹优化，计算两两景点间的距离和最优游玩顺序，避免行程折返跑。
-4. **景点搜图 (前端驱动)**: 行程生成完毕后，前端根据每个景点名称独立调用 `/api/poi/photo` 接口，后端以景点名搜索小红书最新发布的帖子，通过 SSR 抓取帖子首张图片直链，确保展示的是真实的风景实拍照。
-5. **结果聚合**: 最终输出包含预算明细、逐日行程、预约提醒、防坑指南等详细参数的结构化 JSON。
+| 功能 | 说明 |
+| --- | --- |
+| 行程生成 | 提交后异步生成，前台实时显示阶段进度（搜索景点 / 查询天气 / 生成计划），长任务不触发网关超时 |
+| 多城市行程 | 一次出行串多个城市，各自设置停留天数，总天数与城际交通自动汇总 |
+| 景点素材提纯 | 从真实游记中检索景点并结构化（名称、推荐理由、建议时长、预约提示），并用地理编码补齐坐标 |
+| 天气与酒店 | 按行程日期与城市查询天气，按住宿偏好检索酒店并计入预算 |
+| 预算明细 | 门票 / 餐饮 / 住宿 / 交通 / 城际交通分项汇总，可展开核对 |
+| 景点地图 | 真实经纬度标记与连线，支持主题联动的底图样式 |
+| 每日行程 | 按天展示景点顺序、时长、交通、餐饮与住宿建议，含防坑提示 |
+| 知识图谱 | 将「城市 → 天数 → 景点/餐饮/住宿/预算」渲染为可交互关系图 |
+| AI 行程问答 | 带完整行程上下文的追问（票价、适宜性、换乘等），提供快捷提问 |
+| 攻略图导出 | 一键导出包含行程、预算、地图与天气的长图，便于分享 |
+| 多语言 | 界面与生成内容支持中文 / 英文 / 日文 |
+| 日间与夜间主题 | 默认跟随系统，可手动切换并持久保存；地图与图谱同步换色 |
+| 本地优先 | 密钥与数据都留在本机，无需注册账号，任务与图片缓存存本地文件 |
 
-### 3. 数据驱动的动态组件渲染
+## 快速开始
 
-前端不再是写死的静态展示，而是通过响应式变量读取 JSON 数据：
+### 1. 环境要求
 
-* **高德地图 JS API 2.0 组件**: 动态读取 POI 经纬度，绘制连线与标记。
-* **ECharts 知识图谱组件**: 将树状的旅行层级转化为关系网络（图数据库雏形）。
+| 依赖 | 版本 | 用途 |
+| --- | --- | --- |
+| Python | 3.10+ | 后端服务（可用 [uv](https://docs.astral.sh/uv/) 自动安装） |
+| Node.js | 18+ | 前端构建、小红书请求签名 |
+| npm | 随 Node 提供 | 依赖安装与构建 |
 
----
-
-## 快速部署与运行指北
-
-### 环境准备
-
-* Python 3.10+
-* Node.js 18+
-* 大模型 API Key（推荐使用兼容 OpenAI 格式的服务商，如豆包）
-* 高德地图两种 Key：Web 服务 Key（后端 REST 服务）与 Web端(JS API) Key（前端地图渲染）。AMap JS API 2.0 的安全密钥 JSCode 仍然必须填写，但填写到 `.env` / Docker 根目录 `.env` 的 `VITE_AMAP_SECURITY_JS_CODE`，构建或启动前端开发服务时会自动替换 `index.html` 里的占位符，不要把真实密钥直接手写进 `index.html`。（[高德 API](https://lbs.amap.com/)）
-* [Google Maps API Key](https://developers.google.com/maps/apis-by-platform)（若要使用 Google 地图引擎，必须在 Google Cloud 控制台中开通：**Geocoding API, Places API (New), Directions API, Maps JavaScript API, Weather API**，需要绑卡）
-* 小红书Cookie（[小红书](https://www.xiaohongshu.com/) 网页端登录后从浏览器开发者工具复制）
-* 安装 `uv` 包管理器
-
-### Docker / Compose 配置约定
-
-推荐通过 docker-compose 一键启动项目（包含前端和后端环境），在运行之前，先复制根目录配置模板并填补 `.env` 里的环境变量：
+### 2. 获取代码
 
 ```bash
-cp .env.example .env
+git clone <你的仓库地址> travel-king
+cd travel-king
 ```
 
-* 容器启动时不再读取项目目录里的 `backend/.env`，请确保将配置以环境变量的形式传入。
-* `docker-compose.yaml` 中显式配置了必要的运行时代理和 API keys，支持传入 `GOOGLE_MAPS_API_KEY` 与 `GOOGLE_MAPS_PROXY` 等变量；其中 `GOOGLE_MAPS_PROXY` 只用于后端 Google Maps 服务，不会影响 LLM、小红书或高德请求。
-* 前端构建期变量 `VITE_AMAP_WEB_JS_KEY` 与 `VITE_AMAP_SECURITY_JS_CODE` 会通过 `build.args` 自动注入前端；修改后需要重新构建镜像。
-* 前端设置页可修改后端运行时配置（LLM、小红书、高德 Web 服务 Key、Google Maps Key/代理等）。敏感字段会被遮罩返回，保存遮罩值时后端会保持原密钥不变。
+### 3. 配置密钥
 
-根目录 `.env` 示例：
-
-```env
-LLM_API_KEY=your_api_key
-LLM_BASE_URL=https://your-openai-compatible-endpoint/v1
-LLM_MODEL_ID=your_model
-XHS_COOKIE="a1=xxx; web_session=xxx"
-VITE_AMAP_WEB_KEY=your_amap_web_service_key
-VITE_AMAP_WEB_JS_KEY=your_amap_web_js_key
-VITE_AMAP_SECURITY_JS_CODE=your_amap_security_js_code
-GOOGLE_MAPS_API_KEY=
-GOOGLE_MAPS_PROXY=
-```
-
-本地开发仍可按下面步骤分别配置和启动 `backend/.env` 和 `frontend/.env`。
-
-### 本地开发
-
-#### 1. 后端启动
+复制配置模板并填写：
 
 ```bash
-# 进入后端主目录
-cd backend
-
-# 安装小红书签名引擎的 Node.js 依赖
-npm install
-
-# 使用 uv 创建虚拟环境并安装依赖
-uv venv .venv
-
-# 激活虚拟环境
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# 安装项目依赖包
-uv pip install -r requirements.txt
-
-# 复制配置文件并填入相应的 API KEY
-cp .env.example .env
-# [必填] LLM_API_KEY, LLM_BASE_URL, LLM_MODEL_ID（选择有结构化输出能力的模型）
-# [必填] VITE_AMAP_WEB_KEY (高德地图 web服务 类型的key)
-# [必填] XHS_COOKIE（小红书网页端登录后的Cookie）
-# [选填] GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_PROXY（如果需要支持 Google 地图引擎）
-#         GOOGLE_MAPS_PROXY 只作用于 Google Maps 后端服务，不影响 LLM/小红书/高德。
-
-# 启动 FastAPI (推荐通过 uvicorn)
-uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
+cp .env.example .env                 # 服务端配置
+cp frontend/.env.example frontend/.env   # 前端构建期配置
 ```
 
-API 启动后，您可以访问 `http://localhost:8000/docs` 查看互动文档。
+需要准备四类凭据（也可以先留空启动，进界面后用右上角「设置」弹窗填写，保存即生效）：
 
-#### 2. 前端启动
+| 配置项 | 必填 | 用途与获取方式 |
+| --- | --- | --- |
+| `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL_ID` | 是 | 任意兼容 OpenAI 协议的服务（示例使用 DeepSeek）。需选择具备长结构化输出能力的模型 |
+| `VITE_AMAP_WEB_KEY` | 是 | 高德「Web 服务」类型 Key：地理编码、天气、POI、静态地图。[申请入口](https://lbs.amap.com/) |
+| `VITE_AMAP_WEB_JS_KEY` / `VITE_AMAP_SECURITY_JS_CODE` | 是 | 高德「Web端(JS API)」类型 Key 与其安全密钥，用于地图渲染（构建期注入） |
+| `XHS_COOKIE` | 可选 | 小红书网页端登录后的 Cookie（含 `a1`、`web_session`、`webId`）。**未配置时自动使用高德景点素材与配图**，不影响行程生成 |
+| `GOOGLE_MAPS_API_KEY` / `GOOGLE_MAPS_PROXY` | 可选 | 需要 Google 地图引擎时填写（未配置则使用高德） |
+
+### 4. 启动
+
+**方式一：一键脚本（macOS）**
 
 ```bash
-# 进入前端主目录
-cd frontend
-
-# 使用 npm (或 pnpm/yarn) 安装依赖
-npm install
-
-# 复制配置文件并填入相应的 Key
-cp .env.example .env
-# [必填] VITE_AMAP_WEB_JS_KEY 必须是 Web端(JS API) 类型的key
-# [必填] VITE_AMAP_SECURITY_JS_CODE 为 Web端(JS API) 安全密钥 JSCode
-# [可选] VITE_API_BASE_URL 默认为 http://localhost:8000；同源部署可留空
-
-# 启动 Vite 开发服务器
-npm run dev
+bash scripts/install-service.sh     # 首次：注册常驻服务（开机自启、异常自动重启）
+bash scripts/local-start.sh         # 启动
+bash scripts/local-stop.sh          # 停止
+bash scripts/uninstall-service.sh   # 卸载
 ```
 
+**方式二：手动启动（跨平台）**
 
+```bash
+# 后端依赖（首次）
+uv venv backend/.venv --python 3.10
+uv pip install --python backend/.venv/bin/python -r backend/requirements.txt
+cd backend && npm install && cd ..        # 小红书签名引擎的 Node 依赖
 
----
+# 前端构建（首次，产物由后端同源托管）
+cd frontend && npm install && npx vite build && cd ..
 
-## 目录结构与关键代码导读
-
-```text
-TripStar/
-├── backend/                       # Python FastAPI 后端
-│   ├── app/
-│   │   ├── api/routes/            # 核心路由 (trip.py, poi.py, chat.py)
-│   │   ├── agents/                # 多智能体定义与编排 (trip_planner_agent.py 并发核心)
-│   │   ├── services/              # 业务逻辑封装
-│   │   │   ├── xhs_service.py     # 小红书搜索/SSR抓取/LLM提纯/搜图
-│   │   │   ├── llm_service.py     # LLM 客户端封装
-│   │   │   └── knowledge_graph_service.py  # 知识图谱构建
-│   │   └── models/                # Pydantic 类型定义 (schemas.py)
-│   └── .env                       # 本地开发环境变量载体（Docker 部署时不打进镜像）
-│
-├── frontend/                      # Vue 3 互动前端
-│   ├── src/
-│   │   ├── views/                 # 主路由视图 (Home.vue 表单输入; Result.vue 路书展示)
-│   │   ├── components/            # 独立复用的 UI / 背景组件
-│   │   └── services/              # Axios 异步轮询及配置重试逻辑 (api.ts)
-│   ├── index.html                 # 入口挂载及高德地图 SecurityKey 占位符
-│   ├── .env                       # 本地前端开发环境变量（Docker 构建时忽略）
-│   └── package.json
-│
-├── Dockerfile                     # 通用生产发布容器脚本
-├── docker-compose.yaml            # 一键容器编排
-└── README.md
+# 启动服务
+cd backend && .venv/bin/uvicorn app.api.main:app --host 0.0.0.0 --port 7870
 ```
 
-> 下面是部分运行结果，丰富的功能探索中...
+打开 <http://localhost:7870> 即可使用，接口文档在 <http://localhost:7870/docs>。
 
-<img width="1600" height="799" alt="image" src="https://github.com/user-attachments/assets/20221707-c115-4da7-aa49-80eec772bc33" />
-<img width="1598" height="801" alt="image" src="https://github.com/user-attachments/assets/1b4b745e-98f1-4868-a6dd-d32909077713" />
-<img width="1649" height="805" alt="image" src="https://github.com/user-attachments/assets/fe775f15-7a1e-467e-a1c4-f97361e13d95" />
-<img width="1599" height="823" alt="image" src="https://github.com/user-attachments/assets/a262a33d-4dbc-4f5a-b392-9b2d0ab66a31" />
-<img width="1599" height="741" alt="image" src="https://github.com/user-attachments/assets/2c236df0-6ad2-44a0-8976-93d84ea14b1f" />
+> 服务只需要这样一个进程：接口与前端界面同源托管。天气 / 酒店所需的高德 MCP 服务与小红书签名引擎都由主服务按需拉起，无需单独启动，也没有数据库需要部署。
 
+## 运行机制（简要）
 
+```
+浏览器 ──POST /api/trip/plan──▶ 立即返回 task_id（异步任务）
+   │                                  │
+   │                        并发取数：景点素材 + 天气 + 酒店
+   │                                  │
+   │                        LLM 聚合生成结构化行程（含 JSON 容错修复）
+   │                                  │
+   └──轮询 /api/trip/status/{id}──◀ 任务状态落盘，完成后返回行程与知识图谱
+```
 
+景点配图采用三级降级：**小红书实拍图 → 高德 POI 照片 → 设计占位块**，并对失败结果做短时缓存与限流冷却，避免持续触发平台风控。
 
-## 后续优化方向
-- [x] ~~接入小红书，获得高质量计划~~
-- [x] ~~景点图片改为从小红书获取~~
-- [x] ~~景点提前预约提示~~
-- [x] ~~接入 Google Maps，实现国内外双引擎自动降级回退~~
-- [x] ~~模型返回语言国际化适配及底层知识图谱多语言支持~~
-- [x] ~~可查看历史计划支持，通过任务和后端持久化解决~~
-- [x] ~~支持代理配置 (HTTP/SOCKS5) 以确保国内可用 Google 服务~~
-- [x] ~~修改导出图片的外观，增加地图，提高可读性~~
-- [x] ~~支持多城市旅行~~
-- [ ] 添加小红书链接以及美食推荐增强
-- [ ] 前端优化
-- [ ] 车程信息
-- [ ] 服务器在线部署
+更完整的架构说明、模块划分与设计决策见 [项目文档/01-技术大纲.md](项目文档/01-技术大纲.md)。
 
+## 目录结构
 
+```
+travel-king/
+├── backend/                 # FastAPI 后端
+│   ├── app/api/routes/      # 行程 / 景点 / 地图 / 问答 / 设置 / 记忆
+│   ├── app/services/        # 小红书、高德、LLM、知识图谱等业务封装
+│   ├── app/agents/          # 多智能体编排（主控 + 天气 + 酒店）
+│   └── app/memory/          # 用户偏好记忆
+├── frontend/                # Vue 3 前端
+│   ├── src/views/           # Landing（首屏 + 表单）、Result（行程结果页）
+│   ├── src/components/      # 导航、行程预览轨道、景点卡片、AI 问答
+│   ├── src/styles/          # 设计令牌与基础样式
+│   └── src/i18n/locales/    # 中 / 英 / 日 文案
+├── scripts/                 # 启动、停止、服务注册脚本
+├── pictures/                # 品牌设计稿与裁剪结果
+├── 项目文档/                 # 技术大纲、需求、测试、迭代与验收报告
+├── Dockerfile               # 容器构建（可选）
+└── docker-compose.yaml      # 容器编排（可选）
+```
 
-## Star History
+## 常见问题
 
-<a href="https://www.star-history.com/?repos=1sdv%2Ftripstar&type=date&legend=bottom-right">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=1sdv/tripstar&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=1sdv/tripstar&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=1sdv/tripstar&type=date&legend=top-left" />
- </picture>
-</a>
+| 现象 | 原因与处理 |
+| --- | --- |
+| 行程生成失败并提示 Cookie 未配置 | 部署版本若将小红书设为必需，请填写 `XHS_COOKIE`；本项目已实现无 Cookie 降级，正常应能继续生成 |
+| 景点图片显示为占位块 | 小红书搜索触发风控时会返回空结果，系统会自动改用高德图片；若两者都未命中则显示占位。可稍后重试或在设置中更新小红书 Cookie |
+| 小红书 Cookie 失效 | 网页端重新登录后，从开发者工具复制请求头中的 Cookie 字符串更新即可（含 `a1`、`web_session`、`webId`） |
+| 地图空白 | 检查高德「Web端(JS API)」Key 与安全密钥是否正确，修改后需重新构建前端 |
+| 端口被占用 | 修改 `.env` 里的 `PORT`，或先执行 `bash scripts/local-stop.sh` |
+| 服务起不来 | 查看日志 `~/Library/Logs/TripDesign/tripstar.log`（macOS），确认 Python / Node 依赖已安装 |
 
+## 技术栈
 
-## 贡献者
+Vue 3.5 + TypeScript + Vite 6 · Ant Design Vue · vue-i18n · ECharts · 高德 JS API 2.0 · Phosphor Icons
+FastAPI + uvicorn · hello-agents · fastmcp（高德 MCP）· PyExecJS（小红书签名）· OpenAI 兼容协议
 
-<a href="https://github.com/1sdv/TripStar/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=1sdv/TripStar" />
-</a>
+## 许可证与致谢
 
+- 本项目遵循 **GPL-2.0** 许可证，完整文本见 [LICENSE](LICENSE)
+- 复刻来源：[1sdv/TripStar](https://github.com/1sdv/TripStar)，感谢原作者及贡献者
+- 第三方组件与字体许可摘要见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)
 
-## 🙏 致谢
-感谢 [linuxdo](https://linux.do/) 社区的交流、分享与反馈，让 TripStar 的迭代更高效，同时欢迎大家进群交流反馈
-<img width="431" height="411" alt="image" src="https://github.com/user-attachments/assets/118d46c0-a8e9-42fb-8110-c233fc4f6277" />
+### 使用范围提醒（重要）
 
+本项目依赖 **HelloAgents**（<https://github.com/jjyaoao/HelloAgents>），其许可证为 **CC-BY-NC-SA-4.0（禁止商业使用 + 相同方式共享）**。这与 GPL-2.0 允许商业使用的要求无法同时满足，因此包含该依赖的整体分发应视为：
+
+> **仅供个人学习与非商业用途**；涉及 HelloAgents 的部分需保留署名，并继续以 CC-BY-NC-SA-4.0 提供。
+
+如需商业使用，或希望整体仅按 GPL-2.0 发布，需要先替换 HelloAgents 依赖（使用面较小：MCP 工具封装与智能体编排）。详见 [THIRD-PARTY-NOTICES.md 第 3 节](THIRD-PARTY-NOTICES.md)。
+
+> 其它提醒：本项目会通过接口访问小红书、高德等第三方服务，请自行确认并遵守各平台的用户协议与使用条款；相关风险由使用者自行承担。本项目不内置、不分发任何第三方账号凭据。

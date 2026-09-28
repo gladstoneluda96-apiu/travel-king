@@ -1,329 +1,146 @@
-# TripStar - AI Travel Agent
-
-
-> **A Multi-Agent Collaborative Travel Planning Platform Based on the HelloAgents Framework**
-<img width="1823" height="805" alt="image" src="https://github.com/user-attachments/assets/e7fb750f-32e5-4a77-93f7-e7b1c4e5e915" />
-<p align="center">
-  <img src="https://img.shields.io/badge/license-GPL--2.0-orange">
-  <img src="https://img.shields.io/badge/version-v2.1.0-green">
-  <img src="https://img.shields.io/badge/Docker-Build-blue?logo=docker">
-  <img src="https://img.shields.io/badge/python-3.10+-blue.svg">
-  <img src="https://img.shields.io/badge/vue-3.x-brightgreen.svg">
-  <img src="https://img.shields.io/badge/FastAPI-0.100+-teal.svg">
-</p>
-
 <div align="center">
+  <img src="frontend/public/icon.png" width="140" alt="Travel King" />
 
-[🇨🇳 中文](README.md) | [🇺🇸 English](README_en.md) | [🇯🇵 日本語](README_ja.md)
+# Travel King (旅游大王)
+
+**An AI travel planning assistant**: describe your destination and preferences, get an executable itinerary
+
+[![License: GPL-2.0](https://img.shields.io/badge/license-GPL--2.0-orange)](LICENSE)
+[![Vue](https://img.shields.io/badge/vue-3.5-brightgreen)](https://vuejs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-teal)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/python-3.10+-blue)](https://www.python.org/)
+
+[中文](README.md) | [English](README_en.md) | [日本語](README_ja.md)
 
 </div>
 
-> [!IMPORTANT]
-> 
-> You can try the project directly online. For the full experience, you can deploy it locally. **Due to risk control, the online trial does not connect to Xiaohongshu (RED)**: [TripStar - AI Travel Agent](https://modelscope.cn/studios/lcclxy/Journey-to-the-China)
-> 
-> Features include: Travel Plans, Attraction Maps Overview, Budget Details, Daily Itinerary: Itinerary Description, Transportation, Accommodation Recommendations, Attraction Scheduling (address, duration, description, reservation reminders), Dining Plans, Weather Information, Knowledge Graph Visualization, Immersive AI Q&A Companion...
-
-## Project Introduction
-
-**TripStar** is an innovative AI travel agent application, a multi-agent collaborative travel planning platform based on the HelloAgents framework, designed to solve the "information overload" and "decision fatigue" users face when planning trips.
-
-Unlike traditional travel guide websites, this project adopts an innovative model based on **Large Language Models (LLM)** and **Multi-Agent** collaboration. Like an experienced human travel butler, it comprehensively considers users' personalized needs (preferences: transportation, accommodation style, travel interests, special requests, etc.), automatically searching for travel info, checking local weather, curating hotels, and planning optimal attraction routes to **quickly generate a travel itinerary**.
-
-### Core Highlights
-
-* **Deep Xiaohongshu (RED) Integration**: Attraction recommendations and travel guide data come directly from real users' travelogues on Xiaohongshu. LLMs intelligently refine this data to extract the most authentic tips and check-in suggestions. Attraction images are also retrieved in real-time from Xiaohongshu, ensuring the display of the latest, authentic user-taken scenery photos.
-* **Attraction Reservation Reminders**: Intelligently identifies attractions mentioned in Xiaohongshu travelogues that require advance booking (e.g., the Forbidden City, Shaanxi History Museum), distinctly highlighting reservation prompts and channels in the itinerary cards to save you a wasted trip.
-* **Multi-Language & Internationalization Support**: Deeply integrates Vue I18n, while natively supporting language localization at both the LLM prompt level and the knowledge graph data structure. The system UI and AI Q&A seamlessly switch between multiple languages (Chinese/English/Japanese), dynamically translating generated travel plans into the target language to provide a barrier-free trip planning experience for global travelers.
-* **Dual-Engine Custom Interactive Map**: Deeply integrates and supports seamless switching and automatic fallback between **Google Maps** and **AMap (GaoDe)**. Uses Google Maps overseas and falls back to AMap domestically. Dynamically draws a real latitude and longitude route ("Start - Attraction - End"), with high-end customized basemap colors, giving an instant preview of attraction locations for easy itinerary scheduling.
-* **Precise Budget Detail Panel**: Intelligently aggregates multi-dimensional expenses like tickets, dining, accommodation, and transportation, providing an intuitive financial panel to keep your travel budget in check.
-* **Multi-Agent Collaboration**: Employs multiple agents with clear divisions of labor (e.g., Weather Forecaster, Hotel Recommendation Expert), working together via a defined Workflow to complete complex travel planning tasks.
-* **Knowledge Graph Visualization**: Real-time conversion of generated itinerary data into a node-relationship graph, intuitively displaying the spatial structure of "City - Days - Itinerary Nodes - Budget".
-* **Immersive AI Q&A Companion**: After generating the report, provides a floating AI Q&A window (bottom left). The AI retains complete contextual memory of the itinerary, allowing users to ask follow-up questions at any time regarding itinerary details (like ticket prices, or suitability).
-* **Multi-City Trip Planning**: Plan trips spanning multiple cities in one journey. Dynamically add cities with individual stay durations, and the system auto-calculates the total travel days. Inter-city transfer days are smartly annotated with transportation suggestions, the budget panel tracks inter-city transport costs separately, the weather panel displays forecasts per city, and the knowledge graph renders the full multi-city route topology.
-* **User Preference Memory**: Built-in weighted per-user travel preference memory with decay and TOP-K recall. When enabled, TripStar extracts stable preferences after successful itinerary generation, scores and stores them, then injects high-weight memories into future Agent prompts so recommendations become more aligned with the user's habits.
-* **Luxury Dark Glassmorphism Design**: A completely redesigned Dark Luxury Glassmorphism UI, offering a highly immersive, premium visual experience.
-
----
-> For example, if you want to travel to USA-NewYork, simply fill in the destination, dates, and preferences, wait for the itinerary planning results, and preview how to arrange your tour at a glance.
-<img width="1599" height="741" alt="image" src="https://github.com/user-attachments/assets/959d4a2e-7e2b-4136-bd93-bc9ba90a4e80" />
-
-
-## System Architecture
-
-The project uses a standard decoupled frontend-backend architecture, divided into the Vue frontend interaction layer, FastAPI backend service layer, and the LLM/Agents intelligent inference layer.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    
-    participant Client as Frontend (User)
-    participant Route as api/routes/trip.py
-    participant Planner as trip_planner_agent.py
-    participant XHS as xhs_service.py
-    participant Maps as map_dispatcher.py
-    participant LLM as llm_service.py
-    participant POI as api/routes/poi.py
-    participant KG as knowledge_graph_service.py
-
-    Client->>Route: POST /api/trip/plan (city, days, preferences)
-    Route-->>Client: Return task_id & ws_url
-    Route->>Planner: Start async task _run_trip_planning(request)
-    Client->>Route: Subscribe via WebSocket /ws/{task_id}
-    Note right of Route: Push processing/progress status in real time via WebSocket
-    
-    rect rgb(240, 248, 255)
-        Note over Planner, LLM: Parallel stage (asyncio.gather optimization)
-        
-        par [1/3] Attraction search: Xiaohongshu native API refinement
-            Planner->>XHS: search_xhs_attractions(city, keywords, lang)
-            XHS->>XHS: XhsNativeClient native signed requests / SSR fallback scraping
-            XHS->>LLM: Feed travel notes into Prompt to extract an attraction JSON array
-            LLM-->>XHS: [{"name": "Forbidden City", "duration": 120, ...}]
-            
-            loop Fill coordinates for each refined attraction
-                XHS->>Maps: geocode_unified(name, city)
-                Note right of Maps: Google geocoding first, fallback to AMap REST on failure
-                Maps-->>XHS: Coordinates {longitude, latitude}
-            end
-            XHS-->>Planner: Return assembled Xiaohongshu attraction candidates
-            
-        and [2/3] Weather search: Agent calls Tool
-            Planner->>Planner: weather_agent.run()
-            Planner->>Maps: Agent calls Google/AMap MCP Weather Tool
-            Maps-->>Planner: Return future weather data
-            Note right of Planner: If Google API fails, automatically fallback to AMap weather REST
-            
-        and [3/3] Hotel search: Agent calls Tool
-            Planner->>Planner: hotel_agent.run()
-            Planner->>Maps: Agent calls Google/AMap MCP POI Text Search
-            Maps-->>Planner: Return hotel list
-        end
-    end
-    
-    rect rgb(255, 240, 245)
-        Note over Planner, LLM: Serial aggregation stage: final planning fusion
-        Planner->>LLM: Combine attraction, weather, and hotel contexts into the final Planner Prompt
-        LLM-->>Planner: [High-risk operation] Return a complex nested JSON string with itinerary and budget
-        
-        Planner->>Planner: _parse_response() fault-tolerant parsing
-        Note right of Planner: 1. Clean noisy characters<br>2. Fix unescaped quotes<br>3. Repair truncation by closing brackets<br>4. Force extract JSON<br>5. Ask LLM to repair if all else fails
-    end
-
-    Planner->>KG: build_knowledge_graph(trip_plan, lang)
-    Note right of KG: Extract nodes and edges for cities, days, attractions, budget, and suggestions, then translate labels by language
-    KG-->>Planner: graph_data (nodes, edges, categories)
-
-    Planner-->>Route: Return full TripPlanResponse structure
-    Route->>Route: Persist _update_task_state(status="completed") to disk
-    Route-->>Client: Push success result via WebSocket (plan JSON and graph topology)
-    
-    rect rgb(240, 255, 240)
-        Note over Client, XHS: Async frontend lazy loading: attraction image search
-        Client->>POI: GET /api/poi/photo?name=xxx
-        POI->>XHS: get_photo_from_xhs(keyword)
-        XHS->>XHS: Native search for "xxx scenery" and take the first image from the first valid note
-        XHS-->>POI: photo_url
-        POI-->>Client: Image loaded successfully
-    end
-```
-
 ---
 
-## Core Features & Workflow
+## Attribution
 
-### 1. Asynchronous Polling System (Solves Gateway Timeout)
+> **This project is a derivative of [1sdv/TripStar](https://github.com/1sdv/TripStar)**, released under the upstream **GPL-2.0** license.
+> We redesigned the UI, added a light theme, rebuilt the itinerary preview interaction, added a fallback chain for
+> attraction photos, and renamed the project. The detailed list of modifications is in [NOTICE](NOTICE).
+> All copyright of the upstream project belongs to its original authors. This project is not affiliated with
+> or endorsed by them.
 
-To solve the 504 Gateway Timeout issue caused by long-duration LLM inference, the backend routing mechanism was refactored:
+## What it does
 
-* **`POST /api/trip/plan`**: Instantly returns a `task_id`, pushing the multi-minute inference task into the background via `asyncio.create_task`.
-* **`GET /api/trip/status/{task_id}`**: The frontend makes lightweight polling requests every 3 seconds to get the real-time processing progress (e.g., "🔍 Searching for attractions...") until the status hits `completed`.
+Planning a trip usually means jumping between platforms: reading notes, checking weather, comparing hotels,
+estimating budgets, ordering routes. Travel King collapses that into one screen: **describe your destination
+and preferences, and it produces an itinerary you can actually follow**.
 
-### 2. Multi-Agent Architecture (Agentic Workflow)
+The result is a verifiable plan rather than a static list: attractions come with addresses and suggested
+durations, spots requiring advance booking are flagged, transport and meals come with concrete suggestions,
+the budget is itemised, a map and a knowledge graph visualise the route, and you can keep asking follow-up
+questions about the plan.
 
-Upon receiving natural language instructions, the Main Agent breaks down the task using ReAct:
+## Highlights
 
-1. **Xiaohongshu Attraction Extraction**: Searches city travel guide posts, extracts their text via an SSR scraper, and then uses the LLM to refine the lengthy travelogues into structured data: attraction names, authentic reviews, play durations, and reservation requirements. Finally, a POI search API is used to fetch precise coordinates.
-2. **Weather & Hotel**: The Weather agent queries the climate for the target dates; the Hotel agent finds suitable lodging options based on the budget.
-3. **Route Orchestration**: The Main Agent gathers third-party data, orchestrates the workflow, and calculates the distances and optimal visit orders to avoid backtracking.
-4. **Attraction Image Search (Frontend Driven)**: After generating the itinerary, the frontend independently calls the `/api/poi/photo` endpoint for each attraction. The backend then searches for the newest posts on Xiaohongshu based on the attraction name, scraping the direct link of the first image via SSR, ensuring an authentic real-life snapshot.
-5. **Result Aggregation**: The final output is structured JSON encompassing budget details, daily schedules, reservation reminders, and anti-scam tips.
+| Feature | Description |
+| --- | --- |
+| Itinerary generation | Async task with live progress (searching attractions, checking weather, generating the plan) |
+| Multi-city trips | Several cities in one trip, per-city stay length, automatic totals and inter-city transport day |
+| Attraction extraction | Structured extraction from real travel notes (name, reason, duration, booking tips) plus geocoded coordinates |
+| Weather & hotels | Weather by city and date; hotels matched to your accommodation preference and included in the budget |
+| Budget breakdown | Tickets, meals, accommodation, transport and inter-city transport, expandable per item |
+| Attraction map | Real coordinates with markers and route lines, map style follows the app theme |
+| Daily itinerary | Per-day ordering, durations, transport, meals, accommodation and pitfall tips |
+| Knowledge graph | Interactive graph of city → days → attractions / meals / hotels / budget |
+| AI travel Q&A | Follow-up questions with the full itinerary as context, plus quick prompts |
+| Guide image export | One-click long-image export containing itinerary, budget, map and weather |
+| i18n | Chinese, English and Japanese for both UI and generated content |
+| Light / dark theme | Follows the system by default, manual toggle is persisted; map and graph follow the theme |
+| Local-first | Keys and data stay on your machine, no account needed, tasks and images cached locally |
 
-### 3. Data-Driven Dynamic Component Rendering
+## Quick start
 
-The frontend renders dynamic Vue structures recursively by reading JSON data:
+### Requirements
 
-* **Map JS API Components**: Dynamically reads POI coordinates to draw polylines and map markers.
-* **ECharts Knowledge Graph**: Translates the hierarchical travel structure into a relational node network (an early form of a graph database).
+Python 3.10+ (or [uv](https://docs.astral.sh/uv/) to manage it) and Node.js 18+ with npm.
 
----
-
-## Quick Deployment Guide
-
-### Environment Prerequisites
-
-* Python 3.10+
-* Node.js 18+
-* Large Model API Key (OpenAI-compatible endpoints highly recommended, e.g., Doubao)
-* AMap Keys: Web Service Key for backend REST services, Web JS API Key for frontend map rendering, and AMap JS API 2.0 Security JSCode. The Security JSCode is still required, but it should be filled in `.env` / the Docker root `.env` as `VITE_AMAP_SECURITY_JS_CODE`; Vite replaces the placeholder in `index.html` during frontend dev/build. Do not hard-code the real secret directly in `index.html`. If using [Google Maps](https://developers.google.com/maps/apis-by-platform), you must enable: **Geocoding API, Places API (New), Directions API, Maps JavaScript API, and Weather API** in Google Cloud Console, and an active billing account is strictly required.
-* Xiaohongshu Cookie (Retrieve from browser dev tools after logging in on Web)
-* The `uv` package manager
-
-### Docker / Compose Conventions
-
-It is highly recommended to start the project (both frontend and backend) via `docker-compose`. Copy the root config template first and fill your `.env` variables before starting:
+### 1. Clone and configure
 
 ```bash
+git clone <your-repo-url> travel-king
+cd travel-king
 cp .env.example .env
+cp frontend/.env.example frontend/.env
 ```
 
-* The backend does NOT read the `backend/.env` file during container startup. All config is passed via environments setup.
-* `docker-compose.yaml` explicitly maps essential proxies and API keys, supporting variables like `GOOGLE_MAPS_API_KEY` and `GOOGLE_MAPS_PROXY`. `GOOGLE_MAPS_PROXY` is used only by backend Google Maps services; it does not affect LLM, Xiaohongshu, or AMap requests.
-* Frontend build-time variables `VITE_AMAP_WEB_JS_KEY` and `VITE_AMAP_SECURITY_JS_CODE` are injected via `build.args`; rebuild the image after changing them.
-* The frontend settings page can update backend runtime settings such as LLM, Xiaohongshu, AMap Web Service Key, and Google Maps key/proxy. Secret values are masked in API responses, and saving a masked value keeps the original secret unchanged.
+Four kinds of credentials are needed. They can also be filled in later from the in-app settings dialog
+(changes take effect immediately):
 
-Root `.env` example:
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL_ID` | Yes | Any OpenAI-compatible provider (DeepSeek in our example). Pick a model good at long structured output |
+| `VITE_AMAP_WEB_KEY` | Yes | Amap Web Service key: geocoding, weather, POI, static map ([apply here](https://lbs.amap.com/)) |
+| `VITE_AMAP_WEB_JS_KEY` / `VITE_AMAP_SECURITY_JS_CODE` | Yes | Amap JS API key and its security code, injected at build time for map rendering |
+| `XHS_COOKIE` | Optional | Xiaohongshu (RED) web cookie. Without it the app falls back to Amap attraction photos |
+| `GOOGLE_MAPS_API_KEY` / `GOOGLE_MAPS_PROXY` | Optional | Only if you want the Google Maps engine |
 
-```env
-LLM_API_KEY=your_api_key
-LLM_BASE_URL=https://your-openai-compatible-endpoint/v1
-LLM_MODEL_ID=your_model
-XHS_COOKIE="a1=xxx; web_session=xxx"
-VITE_AMAP_WEB_KEY=your_amap_web_service_key
-VITE_AMAP_WEB_JS_KEY=your_amap_web_js_key
-VITE_AMAP_SECURITY_JS_CODE=your_amap_security_js_code
-GOOGLE_MAPS_API_KEY=
-GOOGLE_MAPS_PROXY=
-```
-
-**One-Click Start Command:**
-```bash
-# Build and run containers in background
-docker-compose up -d --build
-
-# Follow service logs
-docker-compose logs -f
-```
-
-For local development, follow the distinct environment configurations below.
-
-### Local Development
-
-#### 1. Start Backend
+### 2. Install and run
 
 ```bash
-# Navigate to backend directory
-cd backend
+# backend
+uv venv backend/.venv --python 3.10
+uv pip install --python backend/.venv/bin/python -r backend/requirements.txt
+cd backend && npm install && cd ..
 
-# Install Node.js dependencies for Xiaohongshu signature engine
-npm install
+# frontend build (served by the backend on the same origin)
+cd frontend && npm install && npx vite build && cd ..
 
-# Create virtual environment with uv
-uv venv .venv
-
-# Activate virtual environment
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# Install project dependencies
-uv pip install -r requirements.txt
-
-# Copy config and fill your API KEYs
-cp .env.example .env
-# [Required] LLM_API_KEY, LLM_BASE_URL, LLM_MODEL_ID (pick a model good at JSON struct)
-# [Required] VITE_AMAP_WEB_KEY (AMap Web Service Key for backend REST services)
-# [Required] XHS_COOKIE
-# [Optional] GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_PROXY
-#            GOOGLE_MAPS_PROXY applies only to backend Google Maps services.
-
-# Start FastAPI (Uvicorn recommended)
-uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
-```
-Once the API is live, visit `http://localhost:8000/docs` to test Interactive Swagger integrations.
-
-#### 2. Start Frontend
-
-```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install dependencies (npm/pnpm/yarn)
-npm install
-
-# Copy config and fill your Keys
-cp .env.example .env
-# [Required] VITE_AMAP_WEB_JS_KEY
-# [Required] VITE_AMAP_SECURITY_JS_CODE
-# [Optional] VITE_API_BASE_URL defaults to http://localhost:8000; leave empty for same-origin deployment.
-
-# Run Vite dev server
-npm run dev
+# run
+cd backend && .venv/bin/uvicorn app.api.main:app --host 0.0.0.0 --port 7870
 ```
 
----
+Open <http://localhost:7870>. API docs are at `/docs`.
 
-## Directory Structure
+On macOS you can instead use the helper scripts: `bash scripts/install-service.sh` (registers a launch agent
+that starts on login and restarts on failure), `scripts/local-start.sh`, `scripts/local-stop.sh`,
+`scripts/uninstall-service.sh`.
 
-```text
-TripStar/
-├── backend/                       # Python FastAPI Backend
-│   ├── app/
-│   │   ├── api/routes/            # Core routing (trip.py, poi.py, chat.py)
-│   │   ├── agents/                # Agent definitions (trip_planner_agent.py)
-│   │   ├── services/              # Business logic layers
-│   │   │   ├── xhs_service.py     # RED Parsing/SSR/LLM
-│   │   │   ├── llm_service.py     # Base LLM Wrapper
-│   │   │   └── knowledge_graph_service.py  # KG formatting
-│   │   └── models/                # Pydantic Schemas
-│   └── .env                       # Local Env
-│
-├── frontend/                      # Vue 3 Frontend UI
-│   ├── src/
-│   │   ├── views/                 # Views (Home.vue; Result.vue)
-│   │   ├── components/            # UI components
-│   │   └── services/              # Async polling & retries
-│   ├── index.html                 # Index entry & AMap Security JSCode placeholder
-│   ├── .env                       # Frontend Local Env
-│   └── package.json
-│
-├── Dockerfile                     # Generic Prod Docker
-├── docker-compose.yaml            # Single-node Compose Setup
-└── README_en.md
+> Only one process is needed: the backend serves both the API and the built frontend. The Amap MCP service
+> (for weather and hotels) and the Node-based signing engine (for Xiaohongshu) are spawned on demand; there is
+> no database to deploy.
+
+## How it works
+
 ```
-> Below are some of the operation results, exploring rich functions...
-<img width="1599" height="823" alt="image" src="https://github.com/user-attachments/assets/0af91914-a087-496f-8a69-caed6748374d" />
-<img width="1649" height="805" alt="image" src="https://github.com/user-attachments/assets/c1d08148-6f81-4428-b10d-ff51083af1a6" />
-<img width="1598" height="801" alt="image" src="https://github.com/user-attachments/assets/1b4b745e-98f1-4868-a6dd-d32909077713" />
+Browser ──POST /api/trip/plan──▶ returns task_id immediately (async task)
+   │                                    │
+   │                        concurrent: attractions + weather + hotels
+   │                                    │
+   │                        LLM aggregates a structured itinerary (with JSON repair)
+   │                                    │
+   └──poll /api/trip/status/{id}──◀ task persisted, returns plan + knowledge graph
+```
 
+Attraction photos use a three-step fallback: **Xiaohongshu photo → Amap POI photo → designed placeholder**,
+with short negative caching and rate-limit cooldown to avoid hammering third-party endpoints.
 
-## Future Optimizations
-- [x] ~~Xiaohongshu Integration~~
-- [x] ~~Attraction Images via Xiaohongshu Search~~
-- [x] ~~Attraction Reservation Prompts~~
-- [x] ~~Google Maps Dual-Engine Fallback~~
-- [x] ~~i18n Multi-Language Model Inference Adaptation & Deep Knowledge Graph Translation~~
-- [x] ~~History Plans Record Support~~
-- [x] ~~HTTP/SOCKS5 Proxy Config~~
-- [x] ~~Better Export Image aesthetics~~
-- [x] ~~Multi-City Travel Planning~~
-- [ ] Advanced Dining Recommendations
+See [项目文档/01-技术大纲.md](项目文档/01-技术大纲.md) for the full architecture, modules and design decisions (Chinese).
 
-## Star History
+## FAQ
 
-<a href="https://www.star-history.com/?repos=1sdv%2Ftripstar&type=date&legend=bottom-right">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=1sdv/tripstar&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=1sdv/tripstar&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=1sdv/tripstar&type=date&legend=top-left" />
- </picture>
-</a>
+| Symptom | Cause and fix |
+| --- | --- |
+| Plan generation fails asking for a cookie | Set `XHS_COOKIE`; this project already degrades gracefully without it |
+| Photos show as placeholders | Xiaohongshu search is rate-limited; the app falls back to Amap. Retry later or refresh the cookie |
+| Xiaohongshu cookie expired | Log in again on the web, copy the `Cookie` request header (needs `a1`, `web_session`, `webId`) |
+| Blank map | Check the Amap JS API key and security code, then rebuild the frontend |
+| Port already in use | Change `PORT` in `.env` or stop the running service first |
 
+## License and attribution
 
-## Contributors
+- Licensed under **GPL-2.0**, full text in [LICENSE](LICENSE)
+- Derivative of [1sdv/TripStar](https://github.com/1sdv/TripStar); thanks to the original authors
+- Third-party components and fonts: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)
 
-<a href="https://github.com/1sdv/TripStar/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=1sdv/TripStar" />
-</a>
+### Usage scope (important)
 
-
-## 🙏 Acknowledgements
-Thanks to the [linux.do](https://linux.do/) community for communication and feedback, making TripStar iterate more efficiently.
+This project depends on **HelloAgents** (<https://github.com/jjyaoao/HelloAgents>), licensed under
+**CC-BY-NC-SA-4.0 (non-commercial, share-alike)**. That conflicts with GPL-2.0's permission of commercial
+use, so any distribution including that dependency must be treated as **non-commercial personal use only**,
+with attribution kept and the HelloAgents-related parts shared under the same license. Replacing that
+dependency is required if you want commercial use or a clean GPL-2.0-only release.
