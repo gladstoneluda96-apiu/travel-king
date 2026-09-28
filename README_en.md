@@ -56,6 +56,20 @@ questions about the plan.
 | Light / dark theme | Follows the system by default, manual toggle is persisted; map and graph follow the theme |
 | Local-first | Keys and data stay on your machine, no account needed, tasks and images cached locally |
 
+## Screenshots
+
+| Landing | Itinerary overview |
+| --- | --- |
+| ![Landing](docs/images/landing.png) | ![Itinerary overview](docs/images/result-overview.png) |
+
+| Attraction map | Knowledge graph |
+| --- | --- |
+| ![Attraction map](docs/images/result-map.png) | ![Knowledge graph](docs/images/result-graph.png) |
+
+Light theme (follows the system by default, manual toggle is persisted):
+
+![Itinerary overview in light theme](docs/images/result-overview-light.png)
+
 ## Quick start
 
 ### Requirements

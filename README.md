@@ -50,6 +50,20 @@
 | 日间与夜间主题 | 默认跟随系统，可手动切换并持久保存；地图与图谱同步换色 |
 | 本地优先 | 密钥与数据都留在本机，无需注册账号，任务与图片缓存存本地文件 |
 
+## 界面预览
+
+| 首屏 | 行程概览 |
+| --- | --- |
+| ![首屏](docs/images/landing.png) | ![行程概览](docs/images/result-overview.png) |
+
+| 景点地图 | 知识图谱 |
+| --- | --- |
+| ![景点地图](docs/images/result-map.png) | ![知识图谱](docs/images/result-graph.png) |
+
+日间模式（默认跟随系统，可手动切换并持久保存）：
+
+![行程概览（日间模式）](docs/images/result-overview-light.png)
+
 ## 快速开始
 
 ### 1. 环境要求
@@ -89,6 +103,8 @@ cp frontend/.env.example frontend/.env   # 前端构建期配置
 ### 4. 启动
 
 **方式一：一键脚本（macOS）**
+
+也可以在 Finder 里直接双击 `scripts/启动旅游大王.command`（启动并自动打开浏览器）与 `scripts/停止旅游大王.command`；脚本会自检依赖、首次运行自动装配环境。
 
 ```bash
 bash scripts/install-service.sh     # 首次：注册常驻服务（开机自启、异常自动重启）
@@ -148,6 +164,7 @@ travel-king/
 │   └── src/i18n/locales/    # 中 / 英 / 日 文案
 ├── scripts/                 # 启动、停止、服务注册脚本
 ├── pictures/                # 品牌设计稿与裁剪结果
+├── docs/images/             # README 界面截图
 ├── 项目文档/                 # 技术大纲、需求、测试、迭代与验收报告
 ├── Dockerfile               # 容器构建（可选）
 └── docker-compose.yaml      # 容器编排（可选）
