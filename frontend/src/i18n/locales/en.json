@@ -28,7 +28,9 @@
     "edit": "Edit",
     "save": "Save",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "prev": "Previous",
+    "next": "Next"
   },
   "api": {
     "submitTripPlanFailed": "Failed to submit trip plan",

@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="swiper-slide"
-    :class="{ 'swiper-slide-active': active }"
-    @mouseenter="emit('hover')"
-    @focusin="emit('hover')"
-  >
+  <div class="attraction-card" :class="{ 'attraction-card--active': active }">
     <div class="slide-media">
       <img
         v-if="imageSrc && !imageFailed"
@@ -55,7 +50,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'hover'): void
   (e: 'select-day', dayArrayIndex: number): void
   (e: 'image-error', event: Event): void
 }>()
@@ -78,17 +72,24 @@ const handleImageError = (event: Event) => {
 </script>
 
 <style scoped>
-.swiper-slide {
+.attraction-card {
   display: flex;
   flex-direction: column;
   width: 100%;
-  user-select: none;
   height: 400px;
   overflow: hidden;
   background: var(--bg-1);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-1);
+  user-select: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+/* 主体卡片：强调描边 + 更强投影 */
+.attraction-card--active {
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-2);
 }
 
 .slide-media {
@@ -185,18 +186,13 @@ const handleImageError = (event: Event) => {
   transform: translateY(1px);
 }
 
-.swiper-3d .swiper-slide-shadow-left,
-.swiper-3d .swiper-slide-shadow-right {
-  background-image: none;
-}
-
 @media (max-width: 768px) {
-  .swiper-slide {
-    height: 380px;
+  .attraction-card {
+    height: 360px;
   }
 
   .slide-media {
-    height: 228px;
+    height: 216px;
   }
 }
 </style>

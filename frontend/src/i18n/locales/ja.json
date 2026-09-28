@@ -28,7 +28,9 @@
     "edit": "編集",
     "save": "保存",
     "cancel": "キャンセル",
-    "delete": "削除"
+    "delete": "削除",
+    "prev": "前へ",
+    "next": "次へ"
   },
   "api": {
     "submitTripPlanFailed": "旅行プランの送信に失敗しました",

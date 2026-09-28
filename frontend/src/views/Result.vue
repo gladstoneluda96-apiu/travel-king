@@ -57,22 +57,13 @@
           :bordered="false"
           class="overview-card section-shellless"
         >
-          <div v-if="overviewAttractions.length > 0" ref="overviewSwiperContainerRef" class="overview-swiper">
-            <div class="swiper">
-              <div class="swiper-wrapper">
-                <OverviewAttractionCard
-                  v-for="(item, index) in overviewAttractions"
-                  :key="`${item.dayArrayIndex}-${item.order}-${item.name}`"
-                  :item="item"
-                  :image-src="getAttractionImage(item.name, index)"
-                  :active="activeOverviewCard === index"
-                  @hover="setActiveOverviewCard(index)"
-                  @image-error="handleImageError"
-                  @select-day="goToDayFromOverview"
-                />
-              </div>
-            </div>
-          </div>
+          <OverviewRail
+            v-if="overviewAttractions.length > 0"
+            :items="overviewAttractions"
+            :get-image="getAttractionImage"
+            @image-error="handleImageError"
+            @select-day="goToDayFromOverview"
+          />
           <a-empty v-else :description="t('common.noData')" />
           <div class="overview-meta">
             <span class="overview-meta-item" style="color: var(--text-1); font-weight: 700;">
@@ -578,12 +569,10 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import { Loader as GoogleMapsLoader } from '@googlemaps/js-api-loader'
 import html2canvas from 'html2canvas'
 import * as echarts from 'echarts'
-import Swiper from 'swiper'
-import { Keyboard } from 'swiper/modules'
 import NavBar from '@/components/NavBar.vue'
 import { cssVar, isDark } from '@/services/theme'
-import OverviewAttractionCard from '@/components/OverviewAttractionCard.vue'
 import AIChat from '@/components/AIChat.vue'
+import OverviewRail from '@/components/OverviewRail.vue'
 import type { TripPlan, TripPlanResponse, KnowledgeGraphData, GraphCategory, Attraction, Meal, Hotel, WeatherInfo } from '@/types'
 import {
   getRuntimeApiBaseUrl,
@@ -606,8 +595,6 @@ const attractionPhotos = ref<Record<string, string>>({})
 const photoAttempted = new Set<string>()
 const activeSection = ref('overview')
 const activeDays = ref<number[]>([0]) // 默认展开第一天
-const activeOverviewCard = ref(1)
-const overviewSwiperContainerRef = ref<HTMLElement | null>(null)
 const mapRefreshing = ref(false)
 let map: any = null
 let googleMap: google.maps.Map | null = null
@@ -616,7 +603,6 @@ let googlePolylines: google.maps.Polyline[] = []
 let googleInfoWindows: google.maps.InfoWindow[] = []
 let googleDirectionsRenderers: google.maps.DirectionsRenderer[] = []
 const mapProviderType = ref<'google' | 'amap'>('amap')
-let overviewSwiper: Swiper | null = null
 let mapInitGeneration = 0
 
 type OverviewAttractionItem = {
@@ -847,61 +833,6 @@ const overviewAttractions = computed<OverviewAttractionItem[]>(() => {
   return items
 })
 
-const destroyOverviewSwiper = () => {
-  if (overviewSwiper) {
-    overviewSwiper.destroy(true, true)
-    overviewSwiper = null
-  }
-}
-
-const initOverviewSwiper = async () => {
-  await nextTick()
-
-  if (!overviewSwiperContainerRef.value || overviewAttractions.value.length === 0) {
-    destroyOverviewSwiper()
-    return
-  }
-
-  const root = overviewSwiperContainerRef.value.querySelector('.swiper') as HTMLElement | null
-  if (!root) return
-
-  destroyOverviewSwiper()
-  overviewSwiper = new Swiper(root, {
-    modules: [Keyboard],
-    effect: 'slide',
-    grabCursor: true,
-    // 仅鼠标拖动：关掉滚轮劫持，幻灯片不再居中回弹
-    centeredSlides: false,
-    slidesPerView: 2,
-    slideToClickedSlide: false,
-    touchStartPreventDefault: false,
-    resistanceRatio: 0.65,
-    watchSlidesProgress: false,
-    keyboard: {
-      enabled: true,
-    },
-    spaceBetween: 16,
-    loop: false,
-    breakpoints: {
-      640: {
-        slidesPerView: 3,
-      },
-      1024: {
-        slidesPerView: 4,
-      },
-    },
-    on: {
-      slideChange: (swiper) => {
-        activeOverviewCard.value = swiper.activeIndex
-      },
-    },
-  })
-
-  // 从第一张开始，不做初始偏移（拖动是唯一的横向控制方式）
-  activeOverviewCard.value = 0
-  overviewSwiper.slideTo(0, 0, false)
-}
-
 // 知识图谱相关
 const graphData = ref<KnowledgeGraphData | null>(null)
 const graphCategories = ref<GraphCategory[]>([])
@@ -936,7 +867,6 @@ const applyTripPlanPayload = async (payload: {
   await loadAttractionPhotos()
   if (activeSection.value === 'map') await ensureMapReady()
   if (activeSection.value === 'knowledge-graph') await ensureGraphReady()
-  if (activeSection.value === 'overview') await initOverviewSwiper()
 }
 
 const restoreTripPlanFromResponse = async (response?: TripPlanResponse | null) => {
@@ -1295,31 +1225,12 @@ watch(activeSection, async (section) => {
   if (!tripPlan.value) return
   if (section === 'map') await ensureMapReady()
   if (section === 'knowledge-graph') await ensureGraphReady()
-  if (section === 'overview') await initOverviewSwiper()
 })
-
-watch(
-  overviewAttractions,
-  (items) => {
-    if (items.length === 0) {
-      activeOverviewCard.value = -1
-      return
-    }
-    if (activeOverviewCard.value < 0 || activeOverviewCard.value >= items.length) {
-      activeOverviewCard.value = Math.min(1, items.length - 1)
-    }
-    if (activeSection.value === 'overview') {
-      void initOverviewSwiper()
-    }
-  },
-  { immediate: true }
-)
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
     window.removeEventListener(RUNTIME_SETTINGS_UPDATED_EVENT, handleRuntimeSettingsUpdated)
   }
-  destroyOverviewSwiper()
   destroyCurrentMap()
   if (kgResizeHandler) {
     window.removeEventListener('resize', kgResizeHandler)
@@ -1352,13 +1263,6 @@ const scrollToSection = ({ key }: { key: string }) => {
 const goToDayFromOverview = (dayArrayIndex: number) => {
   activeDays.value = [dayArrayIndex]
   activeSection.value = 'days'
-}
-
-const setActiveOverviewCard = (index: number) => {
-  activeOverviewCard.value = index
-  if (overviewSwiper && overviewSwiper.activeIndex !== index) {
-    overviewSwiper.slideTo(index)
-  }
 }
 
 // 切换编辑模式
@@ -2970,7 +2874,6 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 </script>
 
 <style scoped>
-@import 'swiper/css';
 
 /* ===== Landing 同款视觉基底 - 结果页 ===== */
 
@@ -3855,23 +3758,6 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   line-height: 1.5;
 }
 
-.overview-swiper {
-  padding: 8px 2px 10px;
-}
-
-.overview-swiper .swiper {
-  padding: 0 0 0.6rem;
-  margin-top: -2rem;
-  margin-bottom: -2rem;
-  overflow: hidden;
-  border-radius: var(--r-sm);
-}
-
-.overview-swiper .swiper-wrapper {
-  align-items: flex-end;
-  min-height: 32rem;
-}
-
 
 /* 预算卡片 */
 .budget-card {
@@ -4558,15 +4444,6 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   .overview-meta-item {
     width: 100%;
     border-radius: var(--r-sm);
-  }
-
-  .overview-swiper .swiper-wrapper {
-    gap: 1rem;
-    min-height: 27rem;
-  }
-
-  .overview-swiper .swiper {
-    padding: 2.4rem 0 0.6rem;
   }
 
   .budget-toolbar {
