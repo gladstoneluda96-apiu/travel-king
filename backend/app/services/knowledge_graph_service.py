@@ -9,14 +9,15 @@ from ..models.schemas import TripPlan
 
 # ============ 节点颜色配置 ============
 NODE_COLORS = {
-    "city":       "#4A90D9",   # 蓝色 - 城市
-    "day":        "#5B8FF9",   # 浅蓝 - 天
-    "attraction": "#5AD8A6",   # 绿色 - 景点
-    "hotel":      "#F6BD16",   # 金色 - 酒店
-    "meal":       "#E8684A",   # 珊瑚红 - 餐饮
-    "weather":    "#6DC8EC",   # 天蓝 - 天气
-    "budget":     "#FF9845",   # 橙色 - 预算
-    "preference": "#B37FEB",   # 紫色 - 偏好
+    # 暗色主题下的分类配色：统一明度与饱和度，主色沿用品牌珊瑚橙
+    "city":       "#F2704A",   # 珊瑚橙 - 城市
+    "day":        "#F2A65A",   # 琥珀 - 天
+    "attraction": "#7EC9A8",   # 薄荷 - 景点
+    "hotel":      "#E4C168",   # 沙色 - 酒店
+    "meal":       "#E07A9B",   # 玫红 - 餐饮
+    "weather":    "#6FB6D9",   # 天蓝 - 天气
+    "budget":     "#B8C77E",   # 橄榄 - 预算
+    "preference": "#8FA5E0",   # 雾蓝 - 偏好
 }
 
 NODE_SIZES = {

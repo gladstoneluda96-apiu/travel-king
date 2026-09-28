@@ -1,7 +1,5 @@
 <template>
   <div class="result-container">
-    <div class="lower-shade"></div>
-
     <NavBar @brand-click="goBack" @cta-click="goBack" />
 
     <main class="result-main">
@@ -409,7 +407,7 @@
               <div class="weather-gradient"></div>
 
               <div class="date-container">
-                <h2 class="date-dayname">{{ formatWeatherWeekday(selectedWeather.date) }}</h2>
+                <p class="date-dayname">{{ formatWeatherWeekday(selectedWeather.date) }}</p>
                 <span class="date-day">{{ formatWeatherDate(selectedWeather.date) }}</span>
                 <span class="location">
                   <span class="location-icon">
@@ -464,8 +462,8 @@
                     </div>
                   </template>
                 </div>
-                <h1 class="weather-temp">{{ formatWeatherTemp(selectedWeather.day_temp) }}</h1>
-                <h3 class="weather-desc">{{ selectedWeather.day_weather }}</h3>
+                <p class="weather-temp">{{ formatWeatherTemp(selectedWeather.day_temp) }}</p>
+                <p class="weather-desc">{{ selectedWeather.day_weather }}</p>
               </div>
             </section>
 
@@ -2216,15 +2214,15 @@ const initKnowledgeGraph = () => {
         if (params.dataType === 'node') {
           const catName = graphData.value?.categories[params.data.category]?.name || ''
           const cat = getCategoryLabel(catName)
-          let tip = `<b style="color:#ffe3d6;font-size:15px">${params.data.name}</b><br/>`
-          tip += `<span style="color:#aaa">${t('result.graph.type')}:</span>${cat}<br/>`
+          let tip = `<b style="color:#E8EFF6;font-size:15px">${params.data.name}</b><br/>`
+          tip += `<span style="color:rgba(232,239,246,0.55)">${t('result.graph.type')}:</span>${cat}<br/>`
           if (params.data.value) {
-            tip += `<span style="color:#aaa">${t('result.graph.detail')}:</span>${params.data.value}`
+            tip += `<span style="color:rgba(232,239,246,0.55)">${t('result.graph.detail')}:</span>${params.data.value}`
           }
           return tip
         }
         if (params.dataType === 'edge') {
-          return `<span style="color:#ffe3d6">${params.data.label || t('result.graph.relation')}</span>`
+          return `<span style="color:#E8EFF6">${params.data.label || t('result.graph.relation')}</span>`
         }
         return ''
       }
@@ -2308,7 +2306,7 @@ const initKnowledgeGraph = () => {
         emphasis: {
           focus: 'adjacency',
           lineStyle: { width: 4, color: '#d76e42' },
-          itemStyle: { borderColor: '#d76e42', borderWidth: 3 },
+          itemStyle: { borderColor: '#F2603C', borderWidth: 3 },
         },
         edgeSymbol: ['none', 'arrow'],
         edgeSymbolSize: [0, 8],
@@ -2981,8 +2979,8 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .result-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0d171d 0%, #142430 58%, #0f1a22 100%);
-  color: #ecf3fa;
+  background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 58%, var(--bg-0) 100%);
+  color: var(--text-1);
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
@@ -2993,7 +2991,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   inset: 0% 0 -1px 0;
   z-index: 0;
   pointer-events: none;
-  background: rgba(6, 14, 20, 0.72);
+  background: var(--nav-bg);
 }
 
 .lower-shade::before {
@@ -3003,7 +3001,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   right: 0;
   top: -28px;
   height: 28px;
-  background: linear-gradient(to bottom, rgba(6, 14, 20, 0), rgba(6, 14, 20, 0.92));
+  background: linear-gradient(to bottom, transparent, var(--nav-bg));
 }
 
 .result-main {
@@ -3016,11 +3014,11 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   max-width: 1400px;
   margin: 0 auto;
   display: block;
-  border: 1.2px solid rgba(236, 243, 250, 0.2);
-  border-radius: 22px;
-  background: rgba(12, 23, 32, 0.56);
+  border: 1.2px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-1);
   backdrop-filter: blur(18px);
-  box-shadow: 0 24px 80px rgba(4, 11, 18, 0.52);
+  box-shadow: 0 24px 80px var(--bg-1);
   padding: 20px;
 }
 
@@ -3058,13 +3056,13 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .top-switch-menu :deep(.ant-menu-item-selected) {
-  color: #ffe3d6 !important;
+  color: var(--text-1) !important;
 }
 
 .top-switch-menu :deep(.ant-menu-item-selected::after),
 .top-switch-menu :deep(.ant-menu-item-active::after),
 .top-switch-menu :deep(.ant-menu-item:hover::after) {
-  border-bottom-color: #d76e42 !important;
+  border-bottom-color: var(--accent) !important;
 }
 
 .top-switch-menu :deep(.ant-menu-overflow) {
@@ -3079,9 +3077,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .top-switch-actions :deep(.ant-btn-default) {
   border: 1.2px solid rgba(236, 243, 250, 0.24) !important;
-  background: rgba(12, 23, 32, 0.56) !important;
-  color: #ecf3fa !important;
-  border-radius: 999px !important;
+  background: var(--bg-1) !important;
+  color: var(--text-1) !important;
+  border-radius: var(--r-pill) !important;
   height: 34px !important;
   padding: 0 12px !important;
   font-size: 12px !important;
@@ -3090,10 +3088,10 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .top-switch-actions :deep(.ant-btn-primary) {
-  border: 1.2px solid rgba(215, 110, 66, 0.5) !important;
-  background: rgba(215, 110, 66, 0.24) !important;
-  color: #ffe3d6 !important;
-  border-radius: 999px !important;
+  border: 1.2px solid var(--accent-strong) !important;
+  background: var(--accent-line) !important;
+  color: var(--text-1) !important;
+  border-radius: var(--r-pill) !important;
   height: 34px !important;
   padding: 0 12px !important;
   font-size: 12px !important;
@@ -3105,11 +3103,11 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .empty-state-panel {
   max-width: 900px;
   margin: 0 auto;
-  border: 1.2px solid rgba(236, 243, 250, 0.2);
-  border-radius: 22px;
-  background: rgba(12, 23, 32, 0.56);
+  border: 1.2px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--bg-1);
   backdrop-filter: blur(18px);
-  box-shadow: 0 24px 80px rgba(4, 11, 18, 0.52);
+  box-shadow: 0 24px 80px var(--bg-1);
   padding: 44px 20px;
   text-align: center;
 }
@@ -3119,10 +3117,10 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .empty-back-btn {
-  border: 1.2px solid rgba(215, 110, 66, 0.5) !important;
-  background: rgba(215, 110, 66, 0.24) !important;
-  color: #ffe3d6 !important;
-  border-radius: 999px !important;
+  border: 1.2px solid var(--accent-strong) !important;
+  background: var(--accent-line) !important;
+  color: var(--text-1) !important;
+  border-radius: var(--r-pill) !important;
   min-height: 34px !important;
   padding: 0 14px !important;
   font-size: 12px !important;
@@ -3135,7 +3133,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .attraction-image-wrapper {
   position: relative;
   margin-bottom: 12px;
-  border-radius: 12px;
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
 
@@ -3154,11 +3152,11 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: linear-gradient(135deg, #d76e42 0%, #a14625 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
   color: white;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3174,7 +3172,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(215, 110, 66, 0.9);
+  background: var(--accent);
   color: white;
   padding: 4px 14px;
   border-radius: 20px;
@@ -3190,7 +3188,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   padding: 8px 12px;
   background: linear-gradient(135deg, rgba(255, 152, 0, 0.12) 0%, rgba(255, 87, 34, 0.08) 100%);
   border: 1px solid rgba(255, 152, 0, 0.35);
-  border-radius: 8px;
+  border-radius: var(--r-xs);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -3204,7 +3202,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .reservation-tips {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-2);
   line-height: 1.5;
 }
 
@@ -3219,7 +3217,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   height: 350px;
   /* border-radius: 24px; */
   overflow: hidden;
-  /* border: 1px solid rgba(255, 255, 255, 0.14); */
+  /* border: 1px solid var(--line-strong); */
   background: none;
 }
 
@@ -3258,7 +3256,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   font-size: 26px;
   line-height: 1.12;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.96);
+  color: var(--text-1);
 }
 
 .date-day {
@@ -3317,13 +3315,13 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   height: 3.6875em;
   margin: -1.84375em;
   background: currentColor;
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   box-shadow:
     -2.1875em 0.6875em 0 -0.6875em,
     2.0625em 0.9375em 0 -0.9375em,
-    0 0 0 0.375em #fff,
-    -2.1875em 0.6875em 0 -0.3125em #fff,
-    2.0625em 0.9375em 0 -0.5625em #fff;
+    0 0 0 0.375em var(--text-1),
+    -2.1875em 0.6875em 0 -0.3125em var(--text-1),
+    2.0625em 0.9375em 0 -0.5625em var(--text-1);
 }
 
 .weather-icon .cloud:after {
@@ -3335,25 +3333,25 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   width: 4.5625em;
   height: 1em;
   background: currentColor;
-  box-shadow: 0 0.4375em 0 -0.0625em #fff;
+  box-shadow: 0 0.4375em 0 -0.0625em var(--text-1);
 }
 
 .weather-icon .cloud:nth-child(2) {
   z-index: 0;
-  background: #fff;
+  background: var(--text-1);
   box-shadow:
-    -2.1875em 0.6875em 0 -0.6875em #fff,
-    2.0625em 0.9375em 0 -0.9375em #fff,
-    0 0 0 0.375em #fff,
-    -2.1875em 0.6875em 0 -0.3125em #fff,
-    2.0625em 0.9375em 0 -0.5625em #fff;
+    -2.1875em 0.6875em 0 -0.6875em var(--text-1),
+    2.0625em 0.9375em 0 -0.9375em var(--text-1),
+    0 0 0 0.375em var(--text-1),
+    -2.1875em 0.6875em 0 -0.3125em var(--text-1),
+    2.0625em 0.9375em 0 -0.5625em var(--text-1);
   opacity: 0.3;
   transform: scale(0.5) translate(6em, -3em);
   animation: weather-cloud 4s linear infinite;
 }
 
 .weather-icon .cloud:nth-child(2):after {
-  background: #fff;
+  background: var(--text-1);
 }
 
 .weather-icon .sun {
@@ -3364,8 +3362,8 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   height: 2.5em;
   margin: -1.25em;
   background: currentColor;
-  border-radius: 50%;
-  box-shadow: 0 0 0 0.375em #fff;
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 0 0.375em var(--text-1);
   animation: weather-spin 12s infinite linear;
 }
 
@@ -3377,9 +3375,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   width: 0.375em;
   height: 1.125em;
   margin-left: -0.1875em;
-  background: #fff;
+  background: var(--text-1);
   border-radius: 0.25em;
-  box-shadow: 0 5.375em #fff;
+  box-shadow: 0 5.375em var(--text-1);
 }
 
 .weather-icon .rays:before,
@@ -3393,9 +3391,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   height: 1.125em;
   transform: rotate(60deg);
   transform-origin: 50% 3.25em;
-  background: #fff;
+  background: var(--text-1);
   border-radius: 0.25em;
-  box-shadow: 0 5.375em #fff;
+  box-shadow: 0 5.375em var(--text-1);
 }
 
 .weather-icon .rays:before {
@@ -3428,12 +3426,12 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   width: 1.125em;
   height: 1.125em;
   margin: -1em 0 0 -0.25em;
-  background: #0cf;
+  background: var(--accent);
   border-radius: 100% 0 60% 50% / 60% 0 100% 50%;
   box-shadow:
-    0.625em 0.875em 0 -0.125em rgba(255, 255, 255, 0.2),
-    -0.875em 1.125em 0 -0.125em rgba(255, 255, 255, 0.2),
-    -1.375em -0.125em 0 rgba(255, 255, 255, 0.2);
+    0.625em 0.875em 0 -0.125em var(--line-strong),
+    -0.875em 1.125em 0 -0.125em var(--line-strong),
+    -1.375em -0.125em 0 var(--line-strong);
   transform: rotate(-28deg);
   animation: weather-rain 3s linear infinite;
 }
@@ -3443,7 +3441,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   top: 50%;
   left: 50%;
   margin: -0.25em 0 0 -0.125em;
-  color: #fff;
+  color: var(--text-1);
   opacity: 0.3;
   animation: weather-lightning 2s linear infinite;
 }
@@ -3504,7 +3502,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   top: 50%;
   left: 50%;
   margin: -1.025em 0 0 -1.0125em;
-  color: #fff;
+  color: var(--text-1);
   line-height: 1em;
   opacity: 0.2;
   animation: weather-spin 8s linear infinite reverse;
@@ -3536,7 +3534,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   font-size: 56px;
   line-height: 0.95;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-1);
   letter-spacing: -0.02em;
 }
 
@@ -3557,9 +3555,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .today-info-container {
-  /* border-radius: 14px; */
-  /* border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.02); */
+  /* border-radius: var(--r-md); */
+  /* border: 1px solid var(--line);
+  background: var(--bg-1); */
 }
 
 .today-info {
@@ -3578,7 +3576,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .today-info-item + .today-info-item {
   margin-top: 6px;
   padding-top: 6px;
-  /* border-top: 1px solid rgba(255, 255, 255, 0.08); */
+  /* border-top: 1px solid var(--line); */
 }
 
 .today-info-item .wea-title {
@@ -3591,7 +3589,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .today-info-item .value {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-1);
   text-align: right;
   font-size: 16px;
 }
@@ -3617,23 +3615,23 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .week-list > li {
   width: 86px;
   padding: 8px 8px;
-  border-radius: 12px;
+  border-radius: var(--r-sm);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.03);
   color: rgba(238, 245, 253, 0.78);
 }
 
 .week-list > li:hover {
   transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--line-strong);
   color: rgba(5, 12, 20, 0.9);
   box-shadow: 0 10px 28px rgba(9, 15, 22, 0.32);
 }
 
 .week-list > li.active {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--text-1);
   color: rgba(9, 14, 24, 0.92);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
 }
@@ -3701,52 +3699,52 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 @keyframes weather-rain {
   0% {
-    background: #0cf;
+    background: var(--accent);
     box-shadow:
-      0.625em 0.875em 0 -0.125em rgba(255, 255, 255, 0.2),
-      -0.875em 1.125em 0 -0.125em rgba(255, 255, 255, 0.2),
-      -1.375em -0.125em 0 #0cf;
+      0.625em 0.875em 0 -0.125em var(--line-strong),
+      -0.875em 1.125em 0 -0.125em var(--line-strong),
+      -1.375em -0.125em 0 var(--accent);
   }
 
   25% {
     box-shadow:
-      0.625em 0.875em 0 -0.125em rgba(255, 255, 255, 0.2),
-      -0.875em 1.125em 0 -0.125em #0cf,
-      -1.375em -0.125em 0 rgba(255, 255, 255, 0.2);
+      0.625em 0.875em 0 -0.125em var(--line-strong),
+      -0.875em 1.125em 0 -0.125em var(--accent),
+      -1.375em -0.125em 0 var(--line-strong);
   }
 
   50% {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--text-3);
     box-shadow:
-      0.625em 0.875em 0 -0.125em #0cf,
-      -0.875em 1.125em 0 -0.125em rgba(255, 255, 255, 0.2),
-      -1.375em -0.125em 0 rgba(255, 255, 255, 0.2);
+      0.625em 0.875em 0 -0.125em var(--accent),
+      -0.875em 1.125em 0 -0.125em var(--line-strong),
+      -1.375em -0.125em 0 var(--line-strong);
   }
 
   100% {
     box-shadow:
-      0.625em 0.875em 0 -0.125em rgba(255, 255, 255, 0.2),
-      -0.875em 1.125em 0 -0.125em rgba(255, 255, 255, 0.2),
-      -1.375em -0.125em 0 #0cf;
+      0.625em 0.875em 0 -0.125em var(--line-strong),
+      -0.875em 1.125em 0 -0.125em var(--line-strong),
+      -1.375em -0.125em 0 var(--accent);
   }
 }
 
 @keyframes weather-lightning {
   45% {
-    color: #fff;
-    background: #fff;
+    color: var(--text-1);
+    background: var(--text-1);
     opacity: 0.2;
   }
 
   50% {
-    color: #0cf;
-    background: #0cf;
+    color: var(--accent);
+    background: var(--accent);
     opacity: 1;
   }
 
   55% {
-    color: #fff;
-    background: #fff;
+    color: var(--text-1);
+    background: var(--text-1);
     opacity: 0.2;
   }
 }
@@ -3755,9 +3753,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .back-top-button {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #d76e42 0%, #a14625 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
   color: white;
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3777,11 +3775,11 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 /* 酒店卡片样式 */
 .hotel-card {
   background: rgba(215, 110, 66, 0.1) !important;
-  border: 1px solid rgba(215, 110, 66, 0.26) !important;
+  border: 1px solid var(--accent-line) !important;
 }
 
 .hotel-card :deep(.ant-card-head) {
-  background: linear-gradient(135deg, rgba(215, 110, 66, 0.9) 0%, rgba(161, 70, 37, 0.9) 100%) !important;
+  background: linear-gradient(135deg, var(--accent) 0%, rgba(161, 70, 37, 0.9) 100%) !important;
 }
 
 .hotel-title {
@@ -3790,11 +3788,11 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .hotel-card :deep(.ant-descriptions-item-label) {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--text-3) !important;
 }
 
 .hotel-card :deep(.ant-descriptions-item-content) {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--text-2) !important;
 }
 
 /* 顶部信息区布局 */
@@ -3838,7 +3836,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 :deep(.section-shellless > .ant-card-body) {
   padding: 0 !important;
   background: rgba(3, 8, 13, 0.726);
-  border-radius: 14px;
+  border-radius: var(--r-md);
 }
 
 .overview-meta {
@@ -3852,9 +3850,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   display: inline-flex;
   align-items: center;
   padding: 3px 12px;
-  /* border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04); */
+  /* border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2); */
   color: rgba(236, 243, 250, 0.78);
   font-size: 12px;
   line-height: 1.5;
@@ -3869,7 +3867,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   margin-top: -2rem;
   margin-bottom: -2rem;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: var(--r-sm);
 }
 
 .overview-swiper .swiper-wrapper {
@@ -3885,9 +3883,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .budget-detail-panel {
   min-height: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(3, 10, 15, 0.88);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-strong);
+  background: var(--nav-bg);
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -3899,7 +3897,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   flex-wrap: wrap;
   gap: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid var(--line-strong);
 }
 
 .budget-toolbar-item {
@@ -3910,7 +3908,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .budget-toolbar-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-2);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -3921,18 +3919,18 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .budget-select :deep(.ant-select-selector) {
   border-radius: 10px !important;
-  border-color: rgba(255, 255, 255, 0.24) !important;
+  border-color: var(--line-strong) !important;
   background: rgba(0, 0, 0, 0.2) !important;
-  color: rgba(255, 255, 255, 0.86) !important;
+  color: var(--text-1) !important;
 }
 
 .budget-select :deep(.ant-select-arrow) {
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: var(--text-2) !important;
 }
 
 .budget-detail-list {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
   overflow: hidden;
   background: rgba(0, 0, 0, 0.18);
 }
@@ -3943,7 +3941,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   align-items: center;
   gap: 10px;
   padding: 11px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid var(--line-strong);
   background: rgba(255, 255, 255, 0.01);
 }
 
@@ -3952,7 +3950,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .budget-detail-header {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-2);
   font-size: 12px;
   color: rgba(255, 255, 255, 0.64);
   letter-spacing: 0.03em;
@@ -3963,7 +3961,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .budget-detail-day,
 .budget-detail-name,
 .budget-detail-amount {
-  color: rgba(255, 255, 255, 0.86);
+  color: var(--text-1);
   font-size: 13px;
 }
 
@@ -3993,7 +3991,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--r-xs);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -4004,16 +4002,16 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .budget-edit-btn {
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--text-2);
 }
 
 .budget-delete-btn {
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--text-2);
 }
 
 .budget-edit-btn:hover,
 .budget-delete-btn:hover {
-  color: #fff;
+  color: var(--text-1);
   transform: scale(1.1);
   /* background: rgba(110, 247, 213, 0.16); */
 }
@@ -4024,9 +4022,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .budget-summary-panel {
   min-height: 100%;
-  border-radius: 14px;
-  border: 1.2px solid rgba(255, 255, 255, 0.14);
-  background: rgba(3, 10, 15, 0.88);
+  border-radius: var(--r-md);
+  border: 1.2px solid var(--line-strong);
+  background: var(--nav-bg);
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -4050,14 +4048,14 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .budget-summary-currency {
   font-size: 42px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-1);
 }
 
 .budget-summary-total-value {
   font-size: 78px;
   line-height: 0.88;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.96);
+  color: var(--text-1);
   letter-spacing: 0.01em;
 }
 
@@ -4069,7 +4067,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .budget-summary-sub-item {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--line);
   padding-top: 8px;
 }
 
@@ -4084,27 +4082,27 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   font-size: 12px;
   line-height: 1.4;
   letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-2);
   text-transform: uppercase;
 }
 
 .budget-pending-wrap {
   margin-top: 4px;
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--line-strong);
 }
 
 .budget-pending-title {
   font-size: 12px;
   letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-2);
   margin-bottom: 8px;
   text-transform: uppercase;
 }
 
 .budget-pending-empty {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-3);
   padding: 8px 0;
 }
 
@@ -4120,9 +4118,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   justify-content: space-between;
   gap: 10px;
   padding: 8px 10px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
 }
 
 .budget-pending-name {
@@ -4166,7 +4164,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   justify-content: center;
   gap: 16px;
   padding: 12px 20px 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--bg-2);
   background: rgba(6, 8, 14, 0.86);
   border-radius: 0 0 16px 16px;
 }
@@ -4176,13 +4174,13 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-3);
 }
 
 .kg-legend-dot {
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: var(--r-pill);
   display: inline-block;
   background-position: center;
   background-size: contain;
@@ -4209,14 +4207,14 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .day-date {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-3);
   margin-left: auto;
 }
 
 .day-city-tag {
   display: inline-block;
   padding: 2px 10px;
-  border-radius: 6px;
+  border-radius: var(--r-xs);
   background: rgba(90, 216, 166, 0.15);
   border: 1px solid rgba(90, 216, 166, 0.3);
   color: #5ad8a6;
@@ -4228,10 +4226,10 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .day-transfer-tag {
   display: inline-block;
   padding: 2px 10px;
-  border-radius: 6px;
+  border-radius: var(--r-xs);
   background: rgba(246, 189, 22, 0.15);
   border: 1px solid rgba(246, 189, 22, 0.35);
-  color: #f6bd16;
+  color: var(--warn);
   font-size: 12px;
   font-weight: 600;
   margin-left: 6px;
@@ -4243,7 +4241,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   gap: 8px;
   padding: 10px 14px;
   margin-bottom: 14px;
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   background: rgba(246, 189, 22, 0.08);
   border: 1px solid rgba(246, 189, 22, 0.2);
   font-size: 13px;
@@ -4256,15 +4254,15 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .transfer-info-label {
   font-weight: 600;
-  color: #f6bd16;
+  color: var(--warn);
 }
 
 .day-info {
   margin-bottom: 20px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--bg-2);
 }
 
 .info-row {
@@ -4279,60 +4277,60 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .info-row .label {
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-3);
   min-width: 100px;
 }
 
 .info-row .value {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-2);
   flex: 1;
 }
 
 /* 卡片样式 - 玻璃拟态暗色 */
 :deep(.ant-card) {
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04) !important;
+  border-radius: var(--r-md);
+  background: var(--bg-2) !important;
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid var(--line) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
   transition: all 0.3s ease;
   animation: fadeInUp 0.6s ease-out;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-2);
 }
 
 :deep(.ant-card:hover) {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  border-color: rgba(215, 110, 66, 0.26) !important;
+  border-color: var(--accent-line) !important;
 }
 
 :deep(.ant-card-head) {
   background: linear-gradient(135deg, rgba(215, 110, 66, 0.2) 0%, rgba(161, 70, 37, 0.14) 100%) !important;
-  color: #ffe3d6 !important;
+  color: var(--text-1) !important;
   border-radius: 16px 16px 0 0;
   font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-bottom: 1px solid var(--bg-2) !important;
 }
 
 :deep(.ant-card-head-title) {
-  color: #ffe3d6 !important;
+  color: var(--text-1) !important;
   font-size: 18px;
 }
 
 :deep(.ant-card-head-title span) {
-  color: #ffe3d6 !important;
+  color: var(--text-1) !important;
 }
 
 :deep(.ant-card-body) {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-2);
 }
 
 :deep(.ant-card-body p) {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-2);
 }
 
 :deep(.ant-card-body strong) {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-3);
 }
 
 /* Collapse 样式 - 暗色 */
@@ -4343,31 +4341,31 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 :deep(.ant-collapse-item) {
   margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid var(--line) !important;
   border-radius: 16px !important;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-1);
 }
 
 :deep(.ant-collapse-header) {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--bg-2) !important;
   padding: 16px 20px !important;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--text-2) !important;
 }
 
 :deep(.ant-collapse-expand-icon) {
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: var(--text-3) !important;
 }
 
 :deep(.ant-collapse-content) {
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-top: 1px solid var(--bg-2) !important;
   background: transparent !important;
 }
 
 :deep(.ant-collapse-content-box) {
   padding: 20px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-2);
 }
 
 /* Descriptions 暗色 */
@@ -4376,38 +4374,38 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 :deep(.ant-descriptions-bordered .ant-descriptions-item-label) {
-  background: rgba(255, 255, 255, 0.04) !important;
-  color: rgba(255, 255, 255, 0.5) !important;
-  border-color: rgba(255, 255, 255, 0.06) !important;
+  background: var(--bg-2) !important;
+  color: var(--text-3) !important;
+  border-color: var(--bg-2) !important;
 }
 
 :deep(.ant-descriptions-bordered .ant-descriptions-item-content) {
   background: transparent !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: var(--text-2) !important;
+  border-color: var(--bg-2) !important;
 }
 
 :deep(.ant-descriptions-item-label) {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--text-3) !important;
 }
 
 :deep(.ant-descriptions-item-content) {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--text-2) !important;
 }
 
 /* Divider 暗色 */
 :deep(.ant-divider) {
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  color: rgba(255, 255, 255, 0.6) !important;
+  border-color: var(--line) !important;
+  color: var(--text-3) !important;
 }
 
 :deep(.ant-divider-inner-text) {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: var(--text-3) !important;
 }
 
 /* Empty 暗色 */
 :deep(.ant-empty-description) {
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: var(--text-3) !important;
 }
 
 /* 景点卡片样式 */
@@ -4501,7 +4499,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   .weather-dashboard {
     flex-direction: column;
     min-height: auto;
-    border-radius: 16px;
+    border-radius: var(--r-md);
   }
 
   .weather-side {
@@ -4562,7 +4560,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
   .overview-meta-item {
     width: 100%;
-    border-radius: 12px;
+    border-radius: var(--r-sm);
   }
 
   .overview-swiper .swiper-wrapper {
@@ -4602,12 +4600,112 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 }
 
+/* ===================== 重设计覆盖层（设计令牌对齐） ===================== */
+
+.result-container {
+  background: var(--bg-0);
+}
+
+/* 外层容器不再做玻璃面板，改由各板块自己成为面板 */
+.content-wrapper {
+  max-width: 1120px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* 顶部板块切换：吸顶 + 细线 + 强调色下划线 */
+.top-switch-nav {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: var(--z-sticky);
+  margin-bottom: var(--sp-5);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--nav-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+:deep(.top-switch-menu.ant-menu) {
+  background: transparent !important;
+  border-bottom: 0 !important;
+}
+
+:deep(.top-switch-menu .ant-menu-item) {
+  color: var(--text-2) !important;
+  font-size: var(--fs-sm);
+}
+
+:deep(.top-switch-menu .ant-menu-item:hover) {
+  color: var(--text-1) !important;
+}
+
+:deep(.top-switch-menu .ant-menu-item-selected) {
+  color: var(--text-1) !important;
+}
+
+:deep(.top-switch-menu .ant-menu-item-selected::after) {
+  border-bottom-color: var(--accent) !important;
+  border-bottom-width: 2px !important;
+}
+
+:deep(.top-switch-menu .ant-menu-item:hover::after) {
+  border-bottom-color: var(--line-strong) !important;
+}
+
+/* 每个板块独立成面板：细线 + 令牌底色，去掉嵌套玻璃 */
+:deep(.section-shellless > .ant-card-body) {
+  padding: clamp(16px, 2vw, 28px) !important;
+  background: var(--bg-1) !important;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.section-shellless {
+  margin-bottom: var(--sp-5);
+}
+
+/* 地图需要铺满面板，不能有内边距 */
+:deep(.map-card > .ant-card-body) {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.map-card {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+/* 数据数字统一等宽字体 */
+.weather-temp,
+.date-day,
+.budget-summary-total-value,
+.budget-summary-sub-value,
+.budget-detail-amount,
+.budget-detail-day,
+.stat-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 清掉遗留的毛玻璃 */
+.budget-detail-panel,
+.budget-summary-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 </style>
 
 <style>
 :root {
-  --tripstar-map-accent: #d76e42;
-  --tripstar-map-accent-strong: #a14625;
+  --tripstar-map-accent: var(--accent);
+  --tripstar-map-accent-strong: var(--accent-strong);
   --tripstar-map-surface: rgba(17, 29, 38, 0.96);
   --tripstar-map-border: rgba(215, 110, 66, 0.35);
   --tripstar-map-text-main: #f6fbff;
