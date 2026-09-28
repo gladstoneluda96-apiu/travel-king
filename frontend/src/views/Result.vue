@@ -579,7 +579,7 @@ import { Loader as GoogleMapsLoader } from '@googlemaps/js-api-loader'
 import html2canvas from 'html2canvas'
 import * as echarts from 'echarts'
 import Swiper from 'swiper'
-import { EffectCoverflow, Keyboard, Mousewheel } from 'swiper/modules'
+import { Keyboard, Mousewheel } from 'swiper/modules'
 import NavBar from '@/components/NavBar.vue'
 import { cssVar, isDark } from '@/services/theme'
 import OverviewAttractionCard from '@/components/OverviewAttractionCard.vue'
@@ -603,6 +603,7 @@ const planId = ref('')
 const editMode = ref(false)
 const originalPlan = ref<TripPlan | null>(null)
 const attractionPhotos = ref<Record<string, string>>({})
+const photoAttempted = new Set<string>()
 const activeSection = ref('overview')
 const activeDays = ref<number[]>([0]) // 默认展开第一天
 const activeOverviewCard = ref(1)
@@ -866,23 +867,18 @@ const initOverviewSwiper = async () => {
 
   destroyOverviewSwiper()
   overviewSwiper = new Swiper(root, {
-    modules: [EffectCoverflow, Keyboard, Mousewheel],
-    effect: 'coverflow',
+    modules: [Keyboard, Mousewheel],
+    effect: 'slide',
     grabCursor: true,
     centeredSlides: true,
-    coverflowEffect: {
-      rotate: 0,
-      stretch: 0,
-      depth: 100,
-      modifier: 2.5,
-    },
+    slidesPerView: 2,
     keyboard: {
       enabled: true,
     },
     mousewheel: {
       thresholdDelta: 70,
     },
-    spaceBetween: 30,
+    spaceBetween: 16,
     loop: false,
     breakpoints: {
       640: {
@@ -1821,11 +1817,13 @@ const loadAttractionPhotos = async () => {
     new Set(
       tripPlan.value.days.flatMap((day) => day.attractions.map((attraction) => attraction.name))
     )
-  ).filter((name) => name && !attractionPhotos.value[name])
+  ).filter((name) => name && !attractionPhotos.value[name] && !photoAttempted.has(name))
 
   if (uniqueNames.length === 0) return
 
-  const concurrencyLimit = 4
+  // 串行 + 间隔请求：短时间内大量搜索容易触发小红书风控（表现为返回空结果）
+  const concurrencyLimit = 1
+  const requestIntervalMs = 900
   let currentIndex = 0
 
   const loadNextPhoto = async () => {
@@ -1833,6 +1831,7 @@ const loadAttractionPhotos = async () => {
       const index = currentIndex
       currentIndex += 1
       const name = uniqueNames[index]
+      photoAttempted.add(name)
 
       try {
         const response = await fetch(
@@ -1846,6 +1845,8 @@ const loadAttractionPhotos = async () => {
       } catch (err) {
         console.error(`获取${name}图片失败:`, err)
       }
+
+      await new Promise((resolve) => setTimeout(resolve, requestIntervalMs))
     }
   }
 
@@ -1856,31 +1857,14 @@ const loadAttractionPhotos = async () => {
   await Promise.all(workers)
 }
 
-// 获取景点图片
+// 获取景点图片：无图时返回空字符串，由卡片组件渲染可换行的占位
 const getAttractionImage = (name: string, _index: number): string => {
-  // 如果已加载真实图片,返回真实图片
-  if (attractionPhotos.value[name]) {
-    return attractionPhotos.value[name]
-  }
-
-  // 返回一个统一的深色占位图
-  const bg = '#1a262f'
-  const textColor = 'rgba(255,255,255,0.4)'
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">
-    <rect width="400" height="300" fill="${bg}"/>
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" font-weight="bold" fill="${textColor}">${name}</text>
-  </svg>`
-
-  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`
+  return attractionPhotos.value[name] || ''
 }
 
-// 图片加载失败时的处理
+// 图片加载失败：由卡片组件切换为占位，这里只记录
 const handleImageError = (event: Event) => {
-  const img = event.target as HTMLImageElement
-  // 使用深色占位图
-  const label = encodeURIComponent(t('result.imageLoadFailed'))
-  img.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="400" height="300" fill="%231a262f"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="18" fill="rgba(255,255,255,0.4)"%3E${label}%3C/text%3E%3C/svg%3E`
+  console.warn('景点图片加载失败，已切换为占位:', (event.target as HTMLImageElement)?.alt)
 }
 
 

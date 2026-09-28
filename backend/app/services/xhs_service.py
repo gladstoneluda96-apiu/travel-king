@@ -523,11 +523,32 @@ def get_xhs_photo_sync(keyword: str) -> str:
     return url
 
 
+# 搜索接口被限流时会返回 code=0 且条目为空，此时进入冷却期避免继续无效请求
+_SEARCH_EMPTY_COOLDOWN_SECONDS = 600
+_search_cooldown_until = 0.0
+
+
+def _search_in_cooldown() -> bool:
+    import time
+
+    return time.time() < _search_cooldown_until
+
+
+def _enter_search_cooldown() -> None:
+    import time
+
+    global _search_cooldown_until
+    _search_cooldown_until = time.time() + _SEARCH_EMPTY_COOLDOWN_SECONDS
+
+
 def _fetch_xhs_photo(keyword: str) -> str:
     """根据关键词从小红书搜索一张首图URL
 
     使用原生签名客户端搜索最新帖子，然后通过原生 API 或 SSR 抓取首张图片。
     """
+    if _search_in_cooldown():
+        return ""
+
     try:
         client = get_xhs_client()
 
@@ -544,6 +565,9 @@ def _fetch_xhs_photo(keyword: str) -> str:
                 break
 
         if not target_note_id:
+            # 空结果通常意味着被风控限流，进入冷却期
+            _enter_search_cooldown()
+            print(f"⚠️  小红书搜索返回空结果（疑似限流），进入 {_SEARCH_EMPTY_COOLDOWN_SECONDS // 60} 分钟冷却: {keyword}")
             return ""
 
         # 方案 A: 通过原生 API 获取笔记详情和图片

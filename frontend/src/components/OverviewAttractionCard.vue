@@ -6,7 +6,17 @@
     @focusin="emit('hover')"
   >
     <div class="slide-media">
-      <img :src="imageSrc" :alt="item.name" loading="lazy" @error="emit('image-error', $event)" />
+      <img
+        v-if="imageSrc && !imageFailed"
+        :src="imageSrc"
+        :alt="item.name"
+        loading="lazy"
+        @error="handleImageError"
+      />
+      <div v-else class="slide-placeholder">
+        <PhMountains :size="28" weight="duotone" />
+        <span class="slide-placeholder-name">{{ item.name }}</span>
+      </div>
     </div>
 
     <div class="slide-body">
@@ -18,15 +28,16 @@
         :aria-label="t('common.dayNumber', { day: item.dayArrayIndex + 1 })"
         @click="emit('select-day', item.dayArrayIndex)"
       >
-        <PhArrowRight :size="17" weight="bold" />
+        <PhArrowRight :size="16" weight="bold" />
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { PhArrowRight } from '@phosphor-icons/vue'
+import { PhArrowRight, PhMountains } from '@phosphor-icons/vue'
 
 type OverviewAttractionItem = {
   name: string
@@ -36,7 +47,7 @@ type OverviewAttractionItem = {
   dayArrayIndex: number
 }
 
-defineProps<{
+const props = defineProps<{
   item: OverviewAttractionItem
   imageSrc: string
   active: boolean
@@ -49,13 +60,27 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const imageFailed = ref(false)
+
+// 图片地址变化时重置失败状态，便于拿到新图后自动恢复
+watch(
+  () => props.imageSrc,
+  () => {
+    imageFailed.value = false
+  }
+)
+
+const handleImageError = (event: Event) => {
+  imageFailed.value = true
+  emit('image-error', event)
+}
 </script>
 
 <style scoped>
 .swiper-slide {
   display: flex;
   flex-direction: column;
-  width: 172px;
+  width: 100%;
   height: 400px;
   overflow: hidden;
   background: var(--bg-1);
@@ -67,9 +92,8 @@ const { t } = useI18n()
 .slide-media {
   position: relative;
   flex: none;
-  height: 288px;
+  height: 250px;
   overflow: hidden;
-  line-height: 0;
   background: var(--bg-2);
 }
 
@@ -83,33 +107,58 @@ const { t } = useI18n()
 }
 
 .swiper-slide-active:hover .slide-media img {
-  transform: scale(1.06);
+  transform: scale(1.04);
+}
+
+/* 没有配图时的占位：图标 + 可换行的景点名 */
+.slide-placeholder {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  color: var(--text-3);
+  text-align: center;
+}
+
+.slide-placeholder-name {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+  word-break: break-word;
 }
 
 .slide-body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--sp-2);
-  padding: var(--sp-4);
+  gap: 6px;
+  min-height: 0;
+  padding: 14px 16px 16px;
 }
 
 .slide-name {
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
   font-weight: 600;
+  line-height: 1.32;
   color: var(--text-1);
-  white-space: nowrap;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .slide-desc {
+  margin: 0;
   color: var(--text-2);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   line-height: var(--lh-snug);
+  word-break: break-word;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -118,8 +167,8 @@ const { t } = useI18n()
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   margin-top: auto;
   border: 0;
   border-radius: var(--r-pill);
@@ -144,12 +193,11 @@ const { t } = useI18n()
 
 @media (max-width: 768px) {
   .swiper-slide {
-    width: 148px;
-    height: 360px;
+    height: 380px;
   }
 
   .slide-media {
-    height: 248px;
+    height: 228px;
   }
 }
 </style>
