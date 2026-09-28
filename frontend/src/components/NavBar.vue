@@ -2,7 +2,7 @@
   <nav class="nav">
     <div class="nav-inner">
       <button class="brand" type="button" @click="handleBrandClick">
-        <img class="brand-logo" src="/icon.png" :alt="t('app.brand')" width="1536" height="1024" />
+        <img class="brand-lockup" :src="brandLockup" :alt="t('app.brand')" width="292" height="138" />
       </button>
 
       <div class="nav-actions">
@@ -169,6 +169,7 @@
 <script setup lang="ts">
 import { PhArrowRight, PhGearSix, PhGithubLogo, PhMoon, PhSun } from '@phosphor-icons/vue'
 import { isDark, toggleTheme } from '@/services/theme'
+import brandLockup from '@/assets/brand-lockup.png'
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
@@ -289,11 +290,12 @@ const saveSettingsNow = async () => {
   cursor: pointer;
 }
 
-/* 品牌标识：设计稿为浅底横版，作为徽标呈现（圆角 + 细描边，两种主题下都清晰） */
-.brand-logo {
+/* 品牌字标：设计稿为白底横版，做成圆角徽标（细描边保证浅色主题下也有边界） */
+.brand-lockup {
   display: block;
-  height: 34px;
+  height: 36px;
   width: auto;
+  background: #fff;
   border-radius: var(--r-xs);
   border: 1px solid var(--line-strong);
 }
