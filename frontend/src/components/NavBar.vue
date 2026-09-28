@@ -2,8 +2,7 @@
   <nav class="nav">
     <div class="nav-inner">
       <button class="brand" type="button" @click="handleBrandClick">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-name">TripKing</span>
+        <img class="brand-logo" src="/icon.png" :alt="t('app.brand')" width="1536" height="1024" />
       </button>
 
       <div class="nav-actions">
@@ -290,17 +289,13 @@ const saveSettingsNow = async () => {
   cursor: pointer;
 }
 
-.brand-mark {
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(140deg, var(--accent), var(--accent-strong));
-  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
-}
-
-.brand-name {
-  font-size: var(--fs-base);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+/* 品牌标识：设计稿为浅底横版，作为徽标呈现（圆角 + 细描边，两种主题下都清晰） */
+.brand-logo {
+  display: block;
+  height: 34px;
+  width: auto;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--line-strong);
 }
 
 .nav-actions {
