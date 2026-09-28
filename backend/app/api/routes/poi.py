@@ -159,11 +159,11 @@ async def get_attraction_photo(name: str, city: Optional[str] = None):
         # 为了避免同名的流行歌曲（如许嵩的《断桥残雪》）、小说或人名干扰
         # 强制带上前缀“景点”，能够绝对限定搜索范围在旅游打卡贴内
         query_kw = f"{name} 风景"
-        photo_url = await get_photo_from_xhs(query_kw)
+        photo_url = await get_photo_from_xhs(query_kw, city or "")
 
         if not photo_url:
             # 兜底：交由前端展示默认占位图
-            print(f"⚠️ 无法为 {name} 找到对应的小红书景点图片，返回空")
+            print(f"⚠️ 无法为 {name} 找到景点图片（小红书与高德均未命中），返回空")
             photo_url = ""
             
         return {

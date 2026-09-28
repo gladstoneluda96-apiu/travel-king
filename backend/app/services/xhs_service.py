@@ -501,7 +501,51 @@ def _photo_cache_put(keyword: str, url: str) -> None:
             _photo_cache.popitem(last=False)
 
 
-def get_xhs_photo_sync(keyword: str) -> str:
+def _resolve_amap_photo(keyword: str, city: str = "") -> str:
+    """高德备选图源：用 POI 搜索取景点照片（小红书搜索为空时兜底）。
+
+    小红书搜索对自动化访问较敏感，被限流时会持续返回空结果；高德 Web 服务
+    接口稳定，且返回的图片同样是实拍，可作为兜底来源。
+    """
+    settings = get_settings()
+    api_key = settings.vite_amap_web_key
+    if not api_key:
+        return ""
+
+    # 关键词形如「成都大熊猫繁育研究基地 风景」，取景点名去匹配 POI
+    poi_name = keyword.split(" 风景")[0].strip() or keyword.strip()
+    try:
+        response = requests.get(
+            "https://restapi.amap.com/v3/place/text",
+            params={
+                "key": api_key,
+                "keywords": poi_name,
+                "city": city or "",
+                "citylimit": "true" if city else "false",
+                "offset": 5,
+                "extensions": "all",
+            },
+            timeout=10,
+        )
+        payload = response.json()
+    except Exception as exc:  # noqa: BLE001
+        print(f"⚠️  高德备选图源查询失败: {exc}")
+        return ""
+
+    if str(payload.get("status")) != "1":
+        print(f"⚠️  高德备选图源返回异常: {payload.get('info')}")
+        return ""
+
+    for poi in payload.get("pois") or []:
+        for photo in poi.get("photos") or []:
+            url = (photo.get("url") or "").strip()
+            if url.startswith("http"):
+                print(f"🖼️  小红书未命中，改用高德图片: {poi.get('name')}")
+                return url
+    return ""
+
+
+def get_xhs_photo_sync(keyword: str, city: str = "") -> str:
     """带缓存的景点图片直链查询入口（兼容旧调用方）。
 
     搜索接口返回的直链带时效签名，必须拿到后立即预取字节落盘
@@ -512,6 +556,10 @@ def get_xhs_photo_sync(keyword: str) -> str:
         return cached
 
     url = _fetch_xhs_photo(keyword)
+    source = "xhs"
+    if not url:
+        url = _resolve_amap_photo(keyword, city)
+        source = "amap" if url else ""
     if url:
         try:
             _validate_image_url(url)
@@ -520,6 +568,8 @@ def get_xhs_photo_sync(keyword: str) -> str:
         except (XHSImageProxyError, ValueError) as e:
             print(f"⚠️  预取图片字节失败（可稍后经 image 接口自动重试）: {e}")
     _photo_cache_put(keyword, url)
+    if source:
+        print(f"🖼️  景点配图来源: {source} ← {keyword}")
     return url
 
 
@@ -629,10 +679,10 @@ def _fetch_xhs_photo(keyword: str) -> str:
     return ""
 
 
-async def get_photo_from_xhs(keyword: str) -> str:
-    """供异步环境调用的小红书图片搜索API"""
+async def get_photo_from_xhs(keyword: str, city: str = "") -> str:
+    """供异步环境调用的景点图片搜索API（小红书优先，高德兜底）"""
     import asyncio
-    return await asyncio.to_thread(get_xhs_photo_sync, keyword)
+    return await asyncio.to_thread(get_xhs_photo_sync, keyword, city)
 
 
 # ============ 图片代理（防盗链绕过 + 时效直链预取） ============
@@ -647,7 +697,7 @@ async def get_photo_from_xhs(keyword: str) -> str:
 _IMAGE_CACHE_DIR = Path(__file__).resolve().parents[2] / "data" / "photo_cache"
 _IMAGE_CACHE_TTL_SECONDS = 24 * 3600
 _IMAGE_MAX_SIZE_BYTES = 10 * 1024 * 1024
-_IMAGE_ALLOWED_HOST_SUFFIXES = (".xiaohongshu.com", ".xhscdn.com")
+_IMAGE_ALLOWED_HOST_SUFFIXES = (".xiaohongshu.com", ".xhscdn.com", ".amap.com", ".autonavi.com")
 _IMAGE_FETCH_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Referer": "https://www.xiaohongshu.com/",
