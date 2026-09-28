@@ -5,8 +5,8 @@
  * 导航栏图标、首屏入口与导出图二维码都会同步更新。
  */
 
-/** 本项目的仓库地址（TODO: 发布后替换为你自己的仓库地址） */
-export const REPO_URL = 'https://github.com/1sdv/TripStar'
+/** 本项目的仓库地址 */
+export const REPO_URL = 'https://github.com/gladstoneluda96-apiu/travel-king'
 
 /** 上游项目地址：本项目复刻来源，用于署名（请勿随意改动） */
 export const UPSTREAM_REPO_URL = 'https://github.com/1sdv/TripStar'

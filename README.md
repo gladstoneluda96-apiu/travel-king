@@ -63,7 +63,7 @@
 ### 2. 获取代码
 
 ```bash
-git clone <你的仓库地址> travel-king
+git clone https://github.com/gladstoneluda96-apiu/travel-king.git
 cd travel-king
 ```
 

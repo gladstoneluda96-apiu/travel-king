@@ -65,7 +65,7 @@ Python 3.10+ (or [uv](https://docs.astral.sh/uv/) to manage it) and Node.js 18+ 
 ### 1. Clone and configure
 
 ```bash
-git clone <your-repo-url> travel-king
+git clone https://github.com/gladstoneluda96-apiu/travel-king.git
 cd travel-king
 cp .env.example .env
 cp frontend/.env.example frontend/.env
