@@ -3,7 +3,7 @@
     <div class="nav-inner">
       <button class="brand" type="button" @click="handleBrandClick">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-name">TripStar</span>
+        <span class="brand-name">TripKing</span>
       </button>
 
       <div class="nav-actions">

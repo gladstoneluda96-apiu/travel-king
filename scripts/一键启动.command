@@ -1,14 +1,14 @@
 #!/bin/bash
 #
-# 旅途星辰（TripDesign）一键启动
+# 旅游大王（Travel King）一键启动
 #
 # 双击本文件即可：检查依赖 → 启动后端服务（API 与前端界面同一端口）→ 自动打开浏览器
 # 也可在终端里带参数使用：
-#     ./启动旅途星辰.command start    启动（默认）
-#     ./启动旅途星辰.command stop     停止
-#     ./启动旅途星辰.command restart  重启
-#     ./启动旅途星辰.command status   查看状态
-#     ./启动旅途星辰.command log      实时查看日志
+#     ./启动旅游大王.command start    启动（默认）
+#     ./启动旅游大王.command stop     停止
+#     ./启动旅游大王.command restart  重启
+#     ./启动旅游大王.command status   查看状态
+#     ./启动旅游大王.command log      实时查看日志
 #
 # 关于「需要启动哪些服务」：
 #   本项目只需要这一个常驻服务（FastAPI/uvicorn，同时提供接口与前端界面）。
@@ -170,7 +170,7 @@ show_status() {
     ok "运行中：$URL"
     launchctl print "$DOMAIN/$LABEL" 2>/dev/null | grep -E "^\s+(state|pid) =" | sed 's/^/     /'
   else
-    warn "未运行（双击「启动旅途星辰」即可启动）"
+    warn "未运行（双击「启动旅游大王」即可启动）"
   fi
   echo
   echo "     最近日志："

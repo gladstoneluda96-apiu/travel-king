@@ -1,8 +1,8 @@
 {
   "app": {
-    "title": "TripStar",
-    "brand": "TripStar",
-    "subBrand": "TripStar · AI 旅行エンジン",
+    "title": "旅行大王",
+    "brand": "旅行大王",
+    "subBrand": "旅行大王 · AI 旅行エンジン",
     "badge": "AI 旅行アシスタント",
     "language": {
       "label": "言語",
@@ -14,7 +14,7 @@
       "toLight": "ライトモードに切り替え",
       "toDark": "ダークモードに切り替え"
     },
-    "footerBrand": "TripStar",
+    "footerBrand": "旅行大王",
     "footerCopy": "{year} All rights reserved.",
     "footerTech": "Powered by HelloAgents + AMap MCP"
   },
@@ -241,7 +241,7 @@
     "chat": {
       "toggle": "AI オンライン",
       "title": "旅程 AI チャット",
-      "welcome": "こんにちは。TripStar AI です。旅程に関することは何でも聞いてください。例：",
+      "welcome": "こんにちは。旅行大王 AI です。旅程に関することは何でも聞いてください。例：",
       "quickPriceLabel": "料金確認",
       "quickSuitabilityLabel": "高齢者向け？",
       "quickMealLabel": "食費確認",
@@ -295,7 +295,7 @@
     },
     "export": {
       "filePrefix": "旅行プラン",
-      "footer": "TripStar · AI 旅行エンジンで生成",
+      "footer": "旅行大王 · AI 旅行エンジンで生成",
       "title": "{city} 旅行プラン",
       "subtitle": "{start} 〜 {end} · {days} 日間",
       "perNight": "/泊",

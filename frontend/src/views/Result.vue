@@ -1937,7 +1937,7 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
   const footerHTML = `
     <div style="text-align:center;padding:24px 16px 16px;border-top:1px solid #e8e8e8;margin-top:8px;">
       <img src="${qrUrl}" style="width:120px;height:120px;margin-bottom:10px;" crossorigin="anonymous" />
-      <div style="font-size:13px;color:#c03a15;font-weight:600;margin-bottom:4px;">TripStar</div>
+      <div style="font-size:13px;color:#c03a15;font-weight:600;margin-bottom:4px;">旅游大王</div>
       <div style="font-size:11px;color:#8a8f95;">https://github.com/1sdv/TripStar</div>
       <div style="font-size:11px;color:#bbb;margin-top:6px;">${t('result.export.footer')}</div>
     </div>`
