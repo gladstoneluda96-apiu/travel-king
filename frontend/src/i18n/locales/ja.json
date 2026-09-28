@@ -10,6 +10,10 @@
       "ja": "日本語",
       "en": "English"
     },
+    "theme": {
+      "toLight": "ライトモードに切り替え",
+      "toDark": "ダークモードに切り替え"
+    },
     "footerBrand": "TripStar",
     "footerCopy": "{year} All rights reserved.",
     "footerTech": "Powered by HelloAgents + AMap MCP"

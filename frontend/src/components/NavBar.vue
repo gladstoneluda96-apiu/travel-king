@@ -40,6 +40,17 @@
           <PhGearSix :size="18" />
         </button>
 
+        <button
+          class="nav-icon"
+          type="button"
+          :title="isDark ? t('app.theme.toLight') : t('app.theme.toDark')"
+          :aria-label="isDark ? t('app.theme.toLight') : t('app.theme.toDark')"
+          @click="toggleTheme"
+        >
+          <PhSun v-if="isDark" :size="18" />
+          <PhMoon v-else :size="18" />
+        </button>
+
         <button class="nav-cta" type="button" @click="handleCtaClick">
           <span>{{ t('home.nav.cta') }}</span>
           <PhArrowRight :size="15" weight="bold" />
@@ -157,7 +168,8 @@
 </template>
 
 <script setup lang="ts">
-import { PhArrowRight, PhGearSix, PhGithubLogo } from '@phosphor-icons/vue'
+import { PhArrowRight, PhGearSix, PhGithubLogo, PhMoon, PhSun } from '@phosphor-icons/vue'
+import { isDark, toggleTheme } from '@/services/theme'
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'

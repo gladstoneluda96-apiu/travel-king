@@ -8,6 +8,7 @@ import './styles/tokens.css'
 import './styles/base.css'
 import App from './App.vue'
 import { i18n } from './i18n'
+import { initTheme } from './services/theme'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -28,6 +29,8 @@ const router = createRouter({
 })
 
 const app = createApp(App)
+
+initTheme()
 
 app.use(router)
 app.use(Antd)

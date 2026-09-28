@@ -10,6 +10,10 @@
       "ja": "日本語",
       "en": "English"
     },
+    "theme": {
+      "toLight": "切换到日间模式",
+      "toDark": "切换到夜间模式"
+    },
     "footerBrand": "旅途星辰",
     "footerCopy": "{year} All rights reserved.",
     "footerTech": "Powered by HelloAgents + 高德 MCP"

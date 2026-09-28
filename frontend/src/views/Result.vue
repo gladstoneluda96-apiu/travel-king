@@ -75,7 +75,7 @@
           </div>
           <a-empty v-else :description="t('common.noData')" />
           <div class="overview-meta">
-            <span class="overview-meta-item" style="color: #ffd5c6; font-weight: 700;">
+            <span class="overview-meta-item" style="color: var(--text-1); font-weight: 700;">
               {{ t('result.dateRange', { start: tripPlan.start_date, end: tripPlan.end_date }) }}
             </span>
             <span v-if="planId" class="overview-meta-item">
@@ -581,6 +581,7 @@ import * as echarts from 'echarts'
 import Swiper from 'swiper'
 import { EffectCoverflow, Keyboard, Mousewheel } from 'swiper/modules'
 import NavBar from '@/components/NavBar.vue'
+import { cssVar, isDark } from '@/services/theme'
 import OverviewAttractionCard from '@/components/OverviewAttractionCard.vue'
 import AIChat from '@/components/AIChat.vue'
 import type { TripPlan, TripPlanResponse, KnowledgeGraphData, GraphCategory, Attraction, Meal, Hotel, WeatherInfo } from '@/types'
@@ -1281,6 +1282,15 @@ onMounted(async () => {
       console.error('结果页从后端回补旅行计划失败:', error)
     }
   }
+
+  // 主题切换：地图换底图样式，知识图谱按新配色重绘
+  watch(isDark, (dark) => {
+    const mapInstance = map as { setMapStyle?: (style: string) => void } | null
+    if (mapInstance?.setMapStyle) {
+      mapInstance.setMapStyle(dark ? 'amap://styles/darkblue' : 'amap://styles/normal')
+    }
+    if (graphData.value) initKnowledgeGraph()
+  })
 })
 
 watch(activeSection, async (section) => {
@@ -1903,7 +1913,7 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
       // 图片自适应：不压缩不裁剪，保持原始比例
       const imgTag = photoUrl
         ? `<img src="${photoUrl}" style="width:100%;height:auto;max-height:400px;object-fit:contain;border-radius:8px;margin-bottom:8px;" crossorigin="anonymous" />`
-        : `<div style="width:100%;height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:bold;">${a.name}</div>`
+        : `<div style="width:100%;height:80px;background:linear-gradient(135deg,#c03a15,#f2704a);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:bold;">${a.name}</div>`
       attractionsHTML += `
         <div style="flex:0 0 48%;background:#fff;border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);margin-bottom:14px;">
           ${imgTag}
@@ -1919,14 +1929,14 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
     if (day.meals && day.meals.length) {
       mealsHTML = `<div style="margin-top:10px;"><strong style="color:#333;">${t('result.export.mealTitle')}</strong><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;">`
       day.meals.forEach(m => {
-        mealsHTML += `<div style="background:#fffbe6;padding:8px 14px;border-radius:8px;font-size:12px;color:#333;"><b>${mealLabels[m.type] || m.type}</b>: ${m.name || t('result.export.noMealRecommendation')}${m.estimated_cost ? ` (¥${m.estimated_cost})` : ''}</div>`
+        mealsHTML += `<div style="background:#fdeee8;padding:8px 14px;border-radius:8px;font-size:12px;color:#333;"><b>${mealLabels[m.type] || m.type}</b>: ${m.name || t('result.export.noMealRecommendation')}${m.estimated_cost ? ` (¥${m.estimated_cost})` : ''}</div>`
       })
       mealsHTML += '</div></div>'
     }
 
     daysHTML += `
       <div style="background:#ffffff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
-        <h3 style="margin:0 0 14px;color:#667eea;font-size:18px;">${t('result.export.dayTitle', { day: index + 1 })} <span style="font-size:14px;color:#888;margin-left:8px;">${day.date || ''}</span></h3>
+        <h3 style="margin:0 0 14px;color:#c03a15;font-size:18px;">${t('result.export.dayTitle', { day: index + 1 })} <span style="font-size:14px;color:#6b7280;margin-left:8px;">${day.date || ''}</span></h3>
         <div style="display:flex;flex-wrap:wrap;gap:12px;">
           ${attractionsHTML}
         </div>
@@ -1940,19 +1950,19 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
     const b = tp.budget
     budgetHTML = `
       <div style="background:#ffffff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
-        <h3 style="margin:0 0 14px;color:#667eea;">${t('result.budget.title')}</h3>
+        <h3 style="margin:0 0 14px;color:#c03a15;">${t('result.budget.title')}</h3>
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
           <div style="flex:1;min-width:120px;background:#f5f7fa;padding:14px;border-radius:10px;text-align:center;">
-            <div style="font-size:12px;color:#888;">${t('result.budget.attraction')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_attractions || 0}</div>
+            <div style="font-size:12px;color:#6b7280;">${t('result.budget.attraction')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_attractions || 0}</div>
           </div>
           <div style="flex:1;min-width:120px;background:#f5f7fa;padding:14px;border-radius:10px;text-align:center;">
-            <div style="font-size:12px;color:#888;">${t('result.budget.hotel')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_hotels || 0}</div>
+            <div style="font-size:12px;color:#6b7280;">${t('result.budget.hotel')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_hotels || 0}</div>
           </div>
           <div style="flex:1;min-width:120px;background:#f5f7fa;padding:14px;border-radius:10px;text-align:center;">
-            <div style="font-size:12px;color:#888;">${t('result.budget.meal')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_meals || 0}</div>
+            <div style="font-size:12px;color:#6b7280;">${t('result.budget.meal')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_meals || 0}</div>
           </div>
           <div style="flex:1;min-width:120px;background:#f5f7fa;padding:14px;border-radius:10px;text-align:center;">
-            <div style="font-size:12px;color:#888;">${t('result.budget.transport')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_transportation || 0}</div>
+            <div style="font-size:12px;color:#6b7280;">${t('result.budget.transport')}</div><div style="font-size:20px;font-weight:bold;color:#333;">¥${b.total_transportation || 0}</div>
           </div>
         </div>
         <div style="background:#667eea;color:#fff;padding:16px 20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;">
@@ -1967,7 +1977,7 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
   if (mapDataUrl) {
     mapHTML = `
       <div style="background:#ffffff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
-        <h3 style="margin:0 0 14px;color:#667eea;">${t('result.side.map')}</h3>
+        <h3 style="margin:0 0 14px;color:#c03a15;">${t('result.side.map')}</h3>
         <img src="${mapDataUrl}" style="width:100%;height:auto;border-radius:10px;" />
       </div>`
   }
@@ -2000,7 +2010,7 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
       })
       weatherHTML = `
         <div style="background:#ffffff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
-          <h3 style="margin:0 0 14px;color:#667eea;">${t('result.export.weatherTitle')}</h3>
+          <h3 style="margin:0 0 14px;color:#c03a15;">${t('result.export.weatherTitle')}</h3>
           <div style="display:flex;flex-wrap:wrap;gap:10px;">
             ${weatherCards}
           </div>
@@ -2008,7 +2018,7 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
     } else {
       weatherHTML = `
         <div style="background:#ffffff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
-          <h3 style="margin:0 0 10px;color:#667eea;">${t('result.export.weatherTitle')}</h3>
+          <h3 style="margin:0 0 10px;color:#c03a15;">${t('result.export.weatherTitle')}</h3>
           <p style="font-size:14px;color:#333;line-height:1.8;">${typeof tp.weather_info === 'string' ? tp.weather_info : JSON.stringify(tp.weather_info)}</p>
         </div>`
     }
@@ -2027,7 +2037,7 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
     })
     hotelHTML = `
       <div style="background:#ffffff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
-        <h3 style="margin:0 0 14px;color:#1976d2;">${t('result.hotelTitle')}</h3>
+        <h3 style="margin:0 0 14px;color:#c03a15;">${t('result.hotelTitle')}</h3>
         ${hotelItems}
       </div>`
   }
@@ -2037,16 +2047,16 @@ const buildExportHTML = (mapDataUrl: string = ''): string => {
   const footerHTML = `
     <div style="text-align:center;padding:24px 16px 16px;border-top:1px solid #e8e8e8;margin-top:8px;">
       <img src="${qrUrl}" style="width:120px;height:120px;margin-bottom:10px;" crossorigin="anonymous" />
-      <div style="font-size:13px;color:#667eea;font-weight:600;margin-bottom:4px;">TripStar</div>
-      <div style="font-size:11px;color:#aaa;">https://github.com/1sdv/TripStar</div>
+      <div style="font-size:13px;color:#c03a15;font-weight:600;margin-bottom:4px;">TripStar</div>
+      <div style="font-size:11px;color:#8a8f95;">https://github.com/1sdv/TripStar</div>
       <div style="font-size:11px;color:#bbb;margin-top:6px;">${t('result.export.footer')}</div>
     </div>`
 
   return `
-    <div style="width:800px;padding:30px;background:#f0f2f5;font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;color:#333;">
+    <div style="width:800px;padding:30px;background:#f5f6f7;font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;color:#333;">
       <div style="text-align:center;margin-bottom:24px;">
         <h1 style="margin:0;font-size:28px;color:#333;">${t('result.export.title', { city: tp.city })}</h1>
-        <p style="margin:6px 0 0;font-size:14px;color:#888;">${t('result.export.subtitle', {
+        <p style="margin:6px 0 0;font-size:14px;color:#6b7280;">${t('result.export.subtitle', {
           start: tp.start_date || '',
           end: tp.end_date || '',
           days: tp.days?.length || 0,
@@ -2205,17 +2215,17 @@ const initKnowledgeGraph = () => {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'item',
-      backgroundColor: 'rgba(12, 23, 32, 0.94)',
-      borderColor: 'rgba(215, 110, 66, 0.35)',
+      backgroundColor: cssVar('--bg-2', '#16202a'),
+      borderColor: cssVar('--accent-line', 'rgba(242, 96, 60, 0.36)'),
       borderWidth: 1,
       padding: [12, 16],
-      textStyle: { color: '#fff', fontSize: 13 },
+      textStyle: { color: cssVar('--text-1', '#e8eff6'), fontSize: 13 },
       formatter: (params: any) => {
         if (params.dataType === 'node') {
           const catName = graphData.value?.categories[params.data.category]?.name || ''
           const cat = getCategoryLabel(catName)
-          let tip = `<b style="color:#E8EFF6;font-size:15px">${params.data.name}</b><br/>`
-          tip += `<span style="color:rgba(232,239,246,0.55)">${t('result.graph.type')}:</span>${cat}<br/>`
+          let tip = `<b style="color:var(--text-1);font-size:15px">${params.data.name}</b><br/>`
+          tip += `<span style="color:var(--text-3)">${t('result.graph.type')}:</span>${cat}<br/>`
           if (params.data.value) {
             tip += `<span style="color:rgba(232,239,246,0.55)">${t('result.graph.detail')}:</span>${params.data.value}`
           }
@@ -2269,7 +2279,8 @@ const initKnowledgeGraph = () => {
               align: 'center' as const,
               verticalAlign: 'middle' as const,
               lineHeight: labelFontSize + 2,
-              color: '#fff',
+              // 节点内文字固定用深墨色：分类色块本身偏亮，两种主题下都可读
+              color: '#12181e',
               fontWeight: 'bold' as const,
               formatter: (params: any) => {
                 const name = String(params.data.name || '')
@@ -2281,7 +2292,7 @@ const initKnowledgeGraph = () => {
         links: graphData.value.edges.map(edge => ({
           ...edge,
           lineStyle: {
-            color: 'rgba(255, 255, 255, 0.15)',
+            color: cssVar('--line-strong', 'rgba(226, 238, 248, 0.18)'),
             width: 1.5,
             curveness: 0.1,
           },
@@ -2289,7 +2300,7 @@ const initKnowledgeGraph = () => {
             show: true,
             formatter: edge.label || '',
             fontSize: 10,
-            color: 'rgba(255, 255, 255, 0.45)',
+            color: cssVar('--text-3', 'rgba(226, 238, 248, 0.55)'),
           },
         })),
         categories: graphData.value.categories,
@@ -2305,8 +2316,8 @@ const initKnowledgeGraph = () => {
         },
         emphasis: {
           focus: 'adjacency',
-          lineStyle: { width: 4, color: '#d76e42' },
-          itemStyle: { borderColor: '#F2603C', borderWidth: 3 },
+          lineStyle: { width: 4, color: cssVar('--accent', '#f2603c') },
+          itemStyle: { borderColor: cssVar('--accent', '#f2603c'), borderWidth: 3 },
         },
         edgeSymbol: ['none', 'arrow'],
         edgeSymbolSize: [0, 8],
@@ -2827,7 +2838,7 @@ const initAMap = async () => {
       zoom: 12,
       center: [116.397128, 39.916527], // 默认中心点(北京)
       viewMode: '3D',
-      mapStyle: 'amap://styles/darkblue',
+      mapStyle: isDark.value ? 'amap://styles/darkblue' : 'amap://styles/normal',
       // 开启 preserveDrawingBuffer 才能让 html2canvas 在 WebGL 下截屏成功！
       WebGLParams: {
         preserveDrawingBuffer: true
@@ -3040,19 +3051,19 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .top-switch-menu {
   width: 100%;
   min-width: 0;
-  border-bottom: 1px solid rgba(236, 243, 250, 0.16) !important;
+  border-bottom: 1px solid var(--line) !important;
   background: transparent !important;
 }
 
 .top-switch-menu :deep(.ant-menu-item) {
-  color: rgba(232, 239, 247, 0.75) !important;
+  color: var(--text-2) !important;
   border-radius: 10px 10px 0 0;
   margin-right: 4px !important;
   transition: all 0.2s ease;
 }
 
 .top-switch-menu :deep(.ant-menu-item:hover) {
-  color: rgba(236, 243, 250, 0.95) !important;
+  color: var(--text-1) !important;
 }
 
 .top-switch-menu :deep(.ant-menu-item-selected) {
@@ -3076,7 +3087,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .top-switch-actions :deep(.ant-btn-default) {
-  border: 1.2px solid rgba(236, 243, 250, 0.24) !important;
+  border: 1.2px solid var(--line-strong) !important;
   background: var(--bg-1) !important;
   color: var(--text-1) !important;
   border-radius: var(--r-pill) !important;
@@ -3113,7 +3124,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .empty-desc {
-  color: rgba(228, 236, 245, 0.72);
+  color: var(--text-2);
 }
 
 .empty-back-btn {
@@ -3161,7 +3172,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  box-shadow: 0 4px 12px rgba(215, 110, 66, 0.35);
+  box-shadow: 0 4px 12px var(--accent-line);
 }
 
 .badge-number {
@@ -3178,7 +3189,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   border-radius: 20px;
   font-weight: bold;
   font-size: 14px;
-  box-shadow: 0 4px 12px rgba(215, 110, 66, 0.3);
+  box-shadow: 0 4px 12px var(--accent-line);
   backdrop-filter: blur(10px);
 }
 
@@ -3186,8 +3197,8 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .reservation-alert {
   margin-top: 10px;
   padding: 8px 12px;
-  background: linear-gradient(135deg, rgba(255, 152, 0, 0.12) 0%, rgba(255, 87, 34, 0.08) 100%);
-  border: 1px solid rgba(255, 152, 0, 0.35);
+  background: linear-gradient(135deg, var(--accent-soft) 0%, var(--accent-soft) 100%);
+  border: 1px solid var(--accent-line);
   border-radius: var(--r-xs);
   display: flex;
   flex-direction: column;
@@ -3197,7 +3208,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .reservation-badge {
   font-size: 13px;
   font-weight: 700;
-  color: #ff9800;
+  color: var(--warn);
 }
 
 .reservation-tips {
@@ -3239,7 +3250,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .weather-gradient {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(140deg, #72edf2 0%, #5151e5 100%);
+  background-image: linear-gradient(140deg, var(--accent) 0%, var(--accent) 100%);
   opacity: 0.84;
 }
 
@@ -3264,7 +3275,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   margin-top: 4px;
   font-size: 13px;
   letter-spacing: 0.03em;
-  color: rgba(240, 247, 255, 0.84);
+  color: var(--text-1);
 }
 
 .location {
@@ -3273,7 +3284,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   margin-top: 8px;
   font-size: 16px;
   font-weight: bold;
-  color: rgba(242, 248, 255, 0.9);
+  color: var(--text-1);
 }
 
 .location-icon {
@@ -3290,7 +3301,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .weather-hero-icon {
   display: inline-block;
-  color: #f7fbff;
+  color: var(--text-1);
   font-size: 0.78em;
   line-height: 1;
   margin-bottom: -22px;
@@ -3541,7 +3552,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .weather-desc {
   margin: 8px 0 0;
   font-size: 20px;
-  color: rgba(245, 249, 255, 0.94);
+  color: var(--text-1);
   font-weight: 600;
 }
 
@@ -3580,7 +3591,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .today-info-item .wea-title {
-  color: rgba(235, 243, 252, 0.809);
+  color: var(--text-1);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   font-size: 17px;
@@ -3619,20 +3630,20 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(238, 245, 253, 0.78);
+  background: var(--bg-2);
+  color: var(--text-2);
 }
 
 .week-list > li:hover {
   transform: translateY(-3px);
   background: var(--line-strong);
-  color: rgba(5, 12, 20, 0.9);
-  box-shadow: 0 10px 28px rgba(9, 15, 22, 0.32);
+  color: var(--bg-2);
+  box-shadow: 0 10px 28px var(--bg-2);
 }
 
 .week-list > li.active {
   background: var(--text-1);
-  color: rgba(9, 14, 24, 0.92);
+  color: var(--bg-2);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
 }
 
@@ -3762,24 +3773,24 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.03em;
-  box-shadow: 0 4px 20px rgba(215, 110, 66, 0.38);
+  box-shadow: 0 4px 20px var(--accent-line);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .back-top-button:hover {
   transform: scale(1.15);
-  box-shadow: 0 6px 28px rgba(215, 110, 66, 0.48);
+  box-shadow: 0 6px 28px var(--accent);
 }
 
 /* 酒店卡片样式 */
 .hotel-card {
-  background: rgba(215, 110, 66, 0.1) !important;
+  background: var(--accent-soft) !important;
   border: 1px solid var(--accent-line) !important;
 }
 
 .hotel-card :deep(.ant-card-head) {
-  background: linear-gradient(135deg, var(--accent) 0%, rgba(161, 70, 37, 0.9) 100%) !important;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%) !important;
 }
 
 .hotel-title {
@@ -3835,7 +3846,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 :deep(.section-shellless > .ant-card-body) {
   padding: 0 !important;
-  background: rgba(3, 8, 13, 0.726);
+  background: var(--bg-1);
   border-radius: var(--r-md);
 }
 
@@ -3853,7 +3864,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   /* border-radius: var(--r-pill);
   border: 1px solid var(--line-strong);
   background: var(--bg-2); */
-  color: rgba(236, 243, 250, 0.78);
+  color: var(--text-2);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -3942,7 +3953,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   gap: 10px;
   padding: 11px 12px;
   border-bottom: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--bg-2);
 }
 
 .budget-detail-row:last-child {
@@ -3952,7 +3963,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .budget-detail-header {
   background: var(--bg-2);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.64);
+  color: var(--text-2);
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -3973,7 +3984,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 
 .budget-detail-amount {
   font-weight: 600;
-  color: #ffd5c6;
+  color: var(--text-1);
 }
 
 .budget-action-wrap {
@@ -4013,7 +4024,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .budget-delete-btn:hover {
   color: var(--text-1);
   transform: scale(1.1);
-  /* background: rgba(110, 247, 213, 0.16); */
+  /* background: var(--accent-soft); */
 }
 
 .right-budget-summary {
@@ -4032,7 +4043,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 }
 
 .budget-summary-title {
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text-1);
   font-size: 34px;
   font-weight: 300;
   letter-spacing: 0.02em;
@@ -4074,7 +4085,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .budget-summary-sub-value {
   font-size: 32px;
   line-height: 1;
-  color: #ffd4c3;
+  color: var(--text-1);
 }
 
 .budget-summary-sub-label {
@@ -4126,7 +4137,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .budget-pending-name {
   flex: 1;
   min-width: 0;
-  color: rgba(255, 255, 255, 0.84);
+  color: var(--text-1);
   font-size: 13px;
   white-space: nowrap;
   overflow: hidden;
@@ -4165,7 +4176,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   gap: 16px;
   padding: 12px 20px 12px;
   border-top: 1px solid var(--bg-2);
-  background: rgba(6, 8, 14, 0.86);
+  background: var(--nav-bg);
   border-radius: 0 0 16px 16px;
 }
 
@@ -4202,7 +4213,7 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
 .day-title {
   font-size: 18px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-1);
 }
 
 .day-date {
@@ -4215,9 +4226,9 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   display: inline-block;
   padding: 2px 10px;
   border-radius: var(--r-xs);
-  background: rgba(90, 216, 166, 0.15);
-  border: 1px solid rgba(90, 216, 166, 0.3);
-  color: #5ad8a6;
+  background: var(--ok-soft);
+  border: 1px solid var(--ok-line);
+  color: var(--ok);
   font-size: 12px;
   font-weight: 600;
   margin-left: 10px;
@@ -4227,8 +4238,8 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   display: inline-block;
   padding: 2px 10px;
   border-radius: var(--r-xs);
-  background: rgba(246, 189, 22, 0.15);
-  border: 1px solid rgba(246, 189, 22, 0.35);
+  background: var(--warn-soft);
+  border: 1px solid var(--warn-line);
   color: var(--warn);
   font-size: 12px;
   font-weight: 600;
@@ -4242,10 +4253,10 @@ const drawRoutes = async (AMap: any, attractions: any[]): Promise<any[]> => {
   padding: 10px 14px;
   margin-bottom: 14px;
   border-radius: var(--r-sm);
-  background: rgba(246, 189, 22, 0.08);
-  border: 1px solid rgba(246, 189, 22, 0.2);
+  background: var(--warn-soft);
+  border: 1px solid var(--warn-line);
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-2);
 }
 
 .transfer-info-icon {

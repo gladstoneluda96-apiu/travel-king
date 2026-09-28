@@ -1,12 +1,32 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN">
 
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#0a0f14">
+  <script>
+    // 首屏绘制前应用主题，避免暗色用户看到白闪
+    (function () {
+      try {
+        var saved = window.localStorage.getItem('tripstar.theme')
+        var mode =
+          saved === 'light' || saved === 'dark'
+            ? saved
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+        document.documentElement.dataset.theme = mode
+        document.documentElement.style.colorScheme = mode
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) meta.setAttribute('content', mode === 'dark' ? '#0a0f14' : '#f5f6f7')
+      } catch (error) {
+        /* 忽略读取失败 */
+      }
+    })()
+  </script>
   <title>TripStar</title>
 </head>
 
